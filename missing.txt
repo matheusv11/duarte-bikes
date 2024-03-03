@@ -1,0 +1,19 @@
+Eslint
+404 route
+500 route
+Footer com dados do desenvolvedor e loja
+(all in next-js repo example)
+Autenticação jwt pra acesso
+skeleton loading
+Definir padding e gap padrão para o layout
+configurar prettier e eslint
+Search filter for products by month, year, day?
+Calculate the amount of sold and rent products on month 
+
+BANCO:
+
+sold_products? -> id, product_id(fk), custom_sold_value?(if admin gives a discount), created_at, updated_at  // this table might exist because the admin can put a custom sold value
+product_types? -> id, name // Bikes don't included, other table for hers
+products -> id, name, description?, type(fk), buyed_value, sold_value, img?, created_at, updated_at 
+rentals ->
+users ->

@@ -4,9 +4,8 @@ import { inter } from '@/app/ui/fonts';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '@/app/ui/theme';
-import { Grid } from "@mui/material";
+import { CssBaseline} from "@mui/material";
 import styles from '@/app/ui/page.module.css'; // Deixar só o global
-import SideNav from "./sidenav";
 
 export const metadata: Metadata = {
   title: "Duarte Bikes",
@@ -23,6 +22,7 @@ export default function RootLayout({
       <body className={`${inter.className} ${styles.main}`}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
+            <CssBaseline />
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
