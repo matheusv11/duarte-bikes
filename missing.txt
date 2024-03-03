@@ -7,13 +7,15 @@ Autenticação jwt pra acesso
 skeleton loading
 Definir padding e gap padrão para o layout
 configurar prettier e eslint
+Pagination
 Search filter for products by month, year, day?
 Calculate the amount of sold and rent products on month 
+Generate prisma migrations
+Use database to store img or other server like dropbox?
 
 BANCO:
-
-sold_products? -> id, product_id(fk), custom_sold_value?(if admin gives a discount), created_at, updated_at  // this table might exist because the admin can put a custom sold value
+selled_products? -> id, product_id(fk), quantity, custom_sold_value?(if admin gives a discount), created_at, updated_at  // this table might exist because the admin can put a custom sold value
 product_types? -> id, name // Bikes don't included, other table for hers
-products -> id, name, description?, type(fk), buyed_value, sold_value, img?, created_at, updated_at 
+products -> id, name, quantity, description?, type(fk), buyed_value, sold_value, img?, created_at, updated_at 
 rentals ->
 users ->
