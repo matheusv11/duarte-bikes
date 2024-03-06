@@ -22,7 +22,7 @@ const message = "Insira um valor acima de 0.";
 
 const FormSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  name: z.string().min(1),
   description: z.string(),
   buyed_value: z.coerce.number().gt(0, { message: message }),
   sold_value: z.coerce.number().gt(0, { message: message }),
@@ -38,15 +38,8 @@ const FormSchema = z.object({
 
 const CreateProduct = FormSchema.omit({ id: true, date: true });
 
-export async function createProduct(prevState: State, formData: FormData) {
-  const validatedFields = CreateProduct.safeParse({
-    name: formData.get('name'),
-    description: formData.get('description'),
-    buyed_value: formData.get('buyed_value'),
-    sold_value: formData.get('sold_value'),
-    quantity: formData.get('quantity'),
-
-  });
+export async function createProduct(data: any) { // Tipar
+  const validatedFields = CreateProduct.safeParse(data);
 
   if (!validatedFields.success) {
     console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)

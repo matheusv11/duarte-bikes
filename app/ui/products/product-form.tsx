@@ -1,16 +1,56 @@
 'use client'
 
-import { Box, Button, TextField, Grid, Accordion, AccordionSummary,AccordionDetails, } from '@mui/material';
+import { Button, TextField, Grid } from '@mui/material';
 import { createProduct } from '@/app/lib/actions';
-import { useFormState } from 'react-dom';
+import { ChangeEvent, FormEvent, useState } from 'react';
+
+// Melhorar esses forms, componetizar pra reutilizar
+const initialForm = { // Tipar
+  name: "",
+  description: "",
+  buyed_value: 0,
+  sold_value: 0,
+  quantity: 0,
+}
+
+type FormError = {
+  name?: string[] | undefined;
+  description?: string[] | undefined;
+  buyed_value?: string[] | undefined;
+  sold_value?: string[] | undefined;
+  quantity?: string[] | undefined;
+}
 
 export default function ProductForm() {
+  const [form, setForm] = useState(initialForm);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FormError>({});// Tipar
 
-  const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createProduct as any, initialState);
+  const handleForm = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({...form, [e.target.name]: e.target.value});
+  }
 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const response = await createProduct(form);
+    if(response?.errors)  {
+      console.log("Response", response);
+      setLoading(false);
+      setErrors(response.errors);
+      // Apenas setar o error de form ao ter conteúdo de form
+      // Caso for coisa de db, retornar numa caixa de mensagem
+      // Retornar http error do server
+      return // Alerta de erro e nas mensagens
+    }
+    setLoading(false);
+    setErrors({});
+    setForm(initialForm);
+  }
+  
   return (
-    <Grid container spacing={2} alignItems="center" component="form" action={dispatch}>
+    <Grid container spacing={2} alignItems="center" component="form" onSubmit={handleSubmit}>
       <Grid item md={2} xs={6}>
         <TextField
           fullWidth
@@ -19,6 +59,10 @@ export default function ProductForm() {
           name="name"
           label="Nome"
           placeholder="Nome"
+          value={form.name}
+          onChange={handleForm}
+          error={!!errors.name}
+          helperText={errors.name && errors.name.map(e => e)}
         />
       </Grid>
       <Grid item md={2} xs={6}>
@@ -28,9 +72,13 @@ export default function ProductForm() {
           name="description"
           label="Descrição"
           placeholder="Descrição"
+          value={form.description}
+          onChange={handleForm}
+          error={!!errors.description}
+          helperText={errors.description && errors.description.map(e => e)}
         />
       </Grid>
-      <Grid item md={1} xs={6}>
+      <Grid item md={1.5} xs={6}>
         <TextField
           fullWidth
           required
@@ -39,9 +87,13 @@ export default function ProductForm() {
           name="buyed_value"
           label="Valor comprado"
           placeholder="Valor comprado"
+          value={form.buyed_value}
+          onChange={handleForm}
+          error={!!errors.buyed_value}
+          helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
         />
       </Grid>
-      <Grid item md={1} xs={6}>
+      <Grid item md={1.5} xs={6}>
         <TextField
           fullWidth
           required
@@ -50,9 +102,13 @@ export default function ProductForm() {
           name="sold_value"
           label="Valor vendido"
           placeholder="Valor vendido"
+          value={form.sold_value}
+          onChange={handleForm}
+          error={!!errors.sold_value}
+          helperText={errors.sold_value && errors.sold_value.map(e => e)}
         />
       </Grid>
-      <Grid item md={1} xs={6}>
+      <Grid item md={1.5} xs={6}>
         <TextField
           fullWidth
           required
@@ -61,10 +117,14 @@ export default function ProductForm() {
           name="quantity"
           label="Quantidade"
           placeholder="Quantidade"
+          value={form.quantity}
+          onChange={handleForm}
+          error={!!errors.quantity}
+          helperText={errors.quantity && errors.quantity.map(e => e)}
         />
       </Grid>
       <Grid item md={1} xs={6}>
-        <Button type="submit" variant="contained">Criar</Button>
+        <Button type="submit" variant="contained" disabled={loading}>Criar</Button>
       </Grid>
     </Grid>
   )

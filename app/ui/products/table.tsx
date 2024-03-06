@@ -71,6 +71,7 @@ const columns = [ // Tipar // Alinhar coluna com oq retornar do banco
 
 const options: MUIDataTableOptions = {
   filterType: 'checkbox',
+  // selectableRows: 'none',
 };
 
 interface Table {
