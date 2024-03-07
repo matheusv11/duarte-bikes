@@ -4,9 +4,21 @@ import ProductsTable from '@/app/ui/products/table'
 import ProductForm from '@/app/ui/products/product-form'
 import { fetchProducts } from '@/app/lib/data';
 
-export default async function Home() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+    rows?: string;
+  };
+}) {
 
-  const products = await fetchProducts(); // O ideal seria deixar na propria table, mas ai não funciona com o server
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+  const rows = Number(searchParams?.rows) || 5; // Para teste
+
+  const products = await fetchProducts({query: query, page: currentPage, perPage: rows }); // Talvez só passar pro products
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
@@ -26,7 +38,7 @@ export default async function Home() {
         </AccordionDetails>
       </Accordion>
      
-      <ProductsTable products={products}/>
+      <ProductsTable products={products.products} totalCount={products.count}/>
     </Box>
   );
 }
