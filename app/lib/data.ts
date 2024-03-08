@@ -1,3 +1,4 @@
+'use server' // Assim posso chamar a vontade em um cliente, sem a request passar por client e ser no server
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from './prisma';
 import { format } from 'date-fns';
@@ -10,6 +11,10 @@ interface FetchProducts {
 
 export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProducts) {
   noStore();
+
+  console.log("Query", query);
+  console.log("Page", page);
+  console.log("Per", perPage);
 
   const skip = (page - 1) * perPage;
   const take = perPage;
