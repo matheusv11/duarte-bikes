@@ -2,9 +2,10 @@
 import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
 import { Product } from '@/app/types/products';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { CircularProgress, LinearProgress } from "@mui/material";
+import { fetchProducts } from '@/app/lib/data';
 
 const columns = [ // Tipar // Alinhar coluna com oq retornar do banco
   // {
@@ -73,18 +74,18 @@ const columns = [ // Tipar // Alinhar coluna com oq retornar do banco
   },
 ];
 
-interface Table {
-  products: Product[];
-  totalCount: number;
-}
-
-export default function Table({ products, totalCount }: Table) {
-
+export default function Table() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+
   const currentPage = Number(searchParams.get('page')) || 1;
+  const query = searchParams.get('query') || '';
+  const rows = Number(searchParams.get('rows')) || 5;
 
   const createPageURL = (pageNumber: number) => {
     const number = pageNumber + 1;
@@ -124,7 +125,7 @@ export default function Table({ products, totalCount }: Table) {
     replace(`${pathname}?${params.toString()}`);
   }
 
-  const options: MUIDataTableOptions = { // Talvez ser memo
+  const options: MUIDataTableOptions = { // Maybe memoized component
     filterType: 'checkbox',
     rowsPerPage: 5,
     rowsPerPageOptions: [5, 10, 20],
@@ -137,8 +138,7 @@ export default function Table({ products, totalCount }: Table) {
     onSearchClose: closeSearch,
     textLabels: {
       body: {
-        noMatch: 'Sorry man'
-
+        noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'
       }
     }
     // onTableChange: () => {
@@ -147,6 +147,25 @@ export default function Table({ products, totalCount }: Table) {
     // customSearchRender: debounceSearchRender(500),
     // selectableRows: 'none',
   };
+
+  useEffect(() => {
+    const fetch = async ()=> {
+      setLoading(true);
+      setProducts([]);
+      try{
+        const res = await fetchProducts({query: query, page: currentPage, perPage: rows });
+        setProducts(res.products)
+        setTotalCount(res.count);
+      }
+      catch(e) {
+        console.error(e); // Colocar alert
+      }
+     
+      setLoading(false);
+    }
+
+    fetch();
+  }, [searchParams]);
 
   return (
     <>

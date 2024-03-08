@@ -2,23 +2,8 @@ import { Box, Accordion, AccordionSummary,AccordionDetails, } from '@mui/materia
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ProductsTable from '@/app/ui/products/table'
 import ProductForm from '@/app/ui/products/product-form'
-import { fetchProducts } from '@/app/lib/data';
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string;
-    page?: string;
-    rows?: string;
-  };
-}) {
-
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
-  const rows = Number(searchParams?.rows) || 5; // Para teste
-
-  const products = await fetchProducts({query: query, page: currentPage, perPage: rows }); // Talvez só passar pro products
+export default async function Page() {
 
   return (
     <Box display="flex" flexDirection="column" gap={2}>
@@ -28,9 +13,6 @@ export default async function Page({
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          {/* <ListItemIcon>
-            {r.icon}
-          </ListItemIcon> */}
           Cadastrar produto
         </AccordionSummary>
         <AccordionDetails>
@@ -38,7 +20,7 @@ export default async function Page({
         </AccordionDetails>
       </Accordion>
      
-      <ProductsTable products={products.products} totalCount={products.count}/>
+      <ProductsTable />
     </Box>
   );
 }

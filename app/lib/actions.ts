@@ -68,6 +68,6 @@ export async function createProduct(data: any) { // Tipar
     };
   }
  
-  revalidatePath('/admin/products');
-  // redirect('/admin/products');
+  // revalidatePath('/admin/products');
+  redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
