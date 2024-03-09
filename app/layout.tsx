@@ -6,6 +6,12 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '@/app/ui/theme';
 import { CssBaseline} from "@mui/material";
 import styles from '@/app/ui/page.module.css'; // Deixar só o global
+import dynamic from "next/dynamic";
+
+const ReduxProvider = dynamic(() => import("@/app/store/redux-provider"), {
+  ssr: false
+});
+
 
 export const metadata: Metadata = {
   title: "Duarte Bikes",
@@ -23,7 +29,9 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <ReduxProvider>
+              {children}
+            </ReduxProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
