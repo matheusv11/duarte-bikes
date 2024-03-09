@@ -34,7 +34,15 @@ export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProduc
       }
     });
 
-    const formatedProducts = products.map(p => ({...p, createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"), updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")})) // Formato br
+    const formatedProducts = products
+    .map(p => (
+      {
+        ...p,
+        edit: p,
+        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
+        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+      }
+    ))
     return {
       products: formatedProducts,
       count: countProducts

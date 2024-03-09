@@ -1,80 +1,19 @@
 'use client'
-import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
+import { IconButton, LinearProgress } from "@mui/material";
+import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
 import { Product } from '@/app/types/products';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
-import { CircularProgress, LinearProgress } from "@mui/material";
 import { fetchProducts } from '@/app/lib/data';
-
-const columns = [ // Tipar // Alinhar coluna com oq retornar do banco
-  // {
-  //   name: "id",
-  //   label: "ID",
-  //   options: {
-  //   filter: true,
-  //   sort: true,
-  //   }
-  // },
-  {
-    name: "name",
-    label: "Produto",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "description",
-    label: "Descrição",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "buyed_value",
-    label: "Valor comprado",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "sold_value",
-    label: "Valor vendido",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "quantity",
-    label: "Quantidade",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "createdAt",
-    label: "Criado em",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-  {
-    name: "updatedAt",
-    label: "Editado em",
-    options: {
-    filter: true,
-    sort: true,
-    }
-  },
-];
+import { FaPen } from "react-icons/fa";
+import { setProductState } from "@/app/store/productSlice";
+import { useAppDispatch, useAppSelector } from "@/app/store";
 
 export default function Table() {
+  const dispatch = useAppDispatch();
+  const product = useAppSelector((state) => state.product.product);
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();
@@ -124,6 +63,93 @@ export default function Table() {
     params.delete('query');
     replace(`${pathname}?${params.toString()}`);
   }
+
+  const columns: MUIDataTableColumnDef[] = [ // Tipar // Alinhar coluna com oq retornar do banco
+    // {
+    //   name: "id",
+    //   label: "ID",
+    //   options: {
+    //   filter: true,
+    //   sort: true,
+    //   }
+    // },
+    {
+      name: "name",
+      label: "Produto",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "description",
+      label: "Descrição",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "buyed_value",
+      label: "Valor comprado",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "sold_value",
+      label: "Valor vendido",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "quantity",
+      label: "Quantidade",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "createdAt",
+      label: "Criado em",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "updatedAt",
+      label: "Editado em",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "edit",
+      label: "Editar",
+      options: {
+        filter: true,
+        sort: true,
+        setCellProps: () => ({ align: 'center' }),
+        customBodyRender: (val, meta, updateValue) => (
+          <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => dispatch(setProductState(product === val ? null : val as any))}
+          edge="start"
+          // sx={{ mr: 2, ...(open && { display: 'none' }) }}
+        >
+          <FaPen />
+        </IconButton>
+        )
+      },
+    },
+  ];
 
   const options: MUIDataTableOptions = { // Maybe memoized component
     filterType: 'checkbox',

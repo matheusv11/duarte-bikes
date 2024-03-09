@@ -37,6 +37,7 @@ const FormSchema = z.object({
 });
 
 const CreateProduct = FormSchema.omit({ id: true, date: true });
+const UpdateProduct = FormSchema.omit({ date: true, id: true });
 
 export async function createProduct(data: any) { // Tipar
   const validatedFields = CreateProduct.safeParse(data);
@@ -69,5 +70,42 @@ export async function createProduct(data: any) { // Tipar
   }
  
   // revalidatePath('/admin/products');
+  redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+}
+
+export async function updateProduct(data: any) { // Tipar
+  const validatedFields = UpdateProduct.safeParse(data);
+
+  if (!validatedFields.success) {
+    console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Campos faltando. Erro ao criar produto.',
+    };
+  }
+ 
+  const {buyed_value,description, name, quantity, sold_value } = validatedFields.data;
+  
+  try {
+    await prisma.products.update({
+      data: {
+        name: name, 
+        buyed_value: buyed_value,
+        quantity: quantity,
+        sold_value: sold_value,
+        description: description
+  
+      },
+      where: {
+        id: data.id
+      }
+    })
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // revalidatePath('/admin/products'); // Passar pro redux
   redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
