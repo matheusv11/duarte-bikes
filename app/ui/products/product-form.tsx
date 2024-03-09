@@ -23,7 +23,11 @@ type FormError = {
   quantity?: string[] | undefined;
 }
 
-export default function ProductForm() {
+interface IProductForm {
+  refetch: () => void;
+}
+
+export default function ProductForm({ refetch }: IProductForm) {
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
 
@@ -51,6 +55,7 @@ export default function ProductForm() {
     setLoading(false);
     setErrors({});
     setForm(initialForm);
+    refetch();
   }
 
   const handleUpdate = async() => {
@@ -68,7 +73,8 @@ export default function ProductForm() {
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    dispatch(setProductState(null as any))
+    dispatch(setProductState(null as any));
+    refetch()
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

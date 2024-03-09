@@ -1,30 +1,32 @@
 'use client'
 import { IconButton, LinearProgress } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
-import { Product } from '@/app/types/products';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
-import { fetchProducts } from '@/app/lib/data';
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaTrash } from "react-icons/fa";
 import { setProductState } from "@/app/store/productSlice";
 import { useAppDispatch, useAppSelector } from "@/app/store";
+import { deleteProduct } from "@/app/lib/actions";
+import { Product } from "@/app/types/products";
 
-export default function Table() {
+
+interface ITable {
+  products: Product[]
+  loading: boolean;
+  currentPage: number;
+  totalCount: number;
+  rows: number;
+  refetch: () => void;
+}
+export default function Table({loading, products, currentPage, totalCount, rows, refetch }: ITable) {
+  const searchParams = useSearchParams();
+
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
 
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { replace } = useRouter();
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const query = searchParams.get('query') || '';
-  const rows = Number(searchParams.get('rows')) || 5;
 
   const createPageURL = (pageNumber: number) => {
     const number = pageNumber + 1;
@@ -64,6 +66,10 @@ export default function Table() {
     replace(`${pathname}?${params.toString()}`);
   }
 
+  const delProduct = async (id: string) => {
+    await deleteProduct(id)
+    refetch();
+  }
   const columns: MUIDataTableColumnDef[] = [ // Tipar // Alinhar coluna com oq retornar do banco
     // {
     //   name: "id",
@@ -149,11 +155,31 @@ export default function Table() {
         )
       },
     },
+    {
+      name: "delete",
+      label: "Excluir",
+      options: {
+        filter: true,
+        sort: true,
+        setCellProps: () => ({ align: 'center' }),
+        customBodyRender: (val, meta, updateValue) => (
+          <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => delProduct(val)}
+          edge="start"
+          // sx={{ mr: 2, ...(open && { display: 'none' }) }}
+        >
+          <FaTrash />
+        </IconButton>
+        )
+      },
+    },
   ];
 
   const options: MUIDataTableOptions = { // Maybe memoized component
     filterType: 'checkbox',
-    rowsPerPage: 5,
+    rowsPerPage: rows,
     rowsPerPageOptions: [5, 10, 20],
     onChangePage: createPageURL,
     onChangeRowsPerPage: changeRows,
@@ -174,27 +200,8 @@ export default function Table() {
     // selectableRows: 'none',
   };
 
-  useEffect(() => {
-    const fetch = async ()=> {
-      setLoading(true);
-      setProducts([]);
-      try{
-        const res = await fetchProducts({query: query, page: currentPage, perPage: rows });
-        setProducts(res.products)
-        setTotalCount(res.count);
-      }
-      catch(e) {
-        console.error(e); // Colocar alert
-      }
-     
-      setLoading(false);
-    }
-
-    fetch();
-  }, [searchParams]);
 
   return (
-    <>
     <MUIDataTable
       title={"Produtos"}
       data={products}
@@ -202,8 +209,6 @@ export default function Table() {
       options={options}
     />
 
-    {/* {JSON.stringify(products)} */}
-    </>
   )
   
 }

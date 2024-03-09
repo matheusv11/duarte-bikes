@@ -70,7 +70,7 @@ export async function createProduct(data: any) { // Tipar
   }
  
   // revalidatePath('/admin/products');
-  redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
 
 export async function updateProduct(data: any) { // Tipar
@@ -107,5 +107,24 @@ export async function updateProduct(data: any) { // Tipar
   }
  
   // revalidatePath('/admin/products'); // Passar pro redux
-  redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+}
+
+export async function deleteProduct(id: string) {
+  // throw new Error('Failed to Delete Invoice');
+
+  try {
+    await prisma.products.delete({
+      where: {
+        id: id
+      }
+    })
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+
 }
