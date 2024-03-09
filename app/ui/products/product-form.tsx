@@ -82,11 +82,22 @@ export default function ProductForm() {
 
   const toggleAccordion = () => {
     console.log("Toggle", expanded);
-    setExpanded(!!product && !expanded);
+    if(product && !expanded) {
+      setExpanded(true);
+    }else if(!expanded ) {
+      setExpanded(true);
+    } else if (expanded) {
+      setExpanded(false);
+    }
   }
 
   useEffect(() => {
-    if(product) setForm(product as any)
+    if(product) {
+      setForm(product as any)
+      setExpanded(true);
+    } else {
+      setExpanded(false)
+    }
   }, [product]);
   
   return (
