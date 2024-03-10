@@ -3,7 +3,8 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import prisma from './prisma'
-
+import { signIn, signOut } from '@/auth';
+import { AuthError } from 'next-auth';
 
 export type State = {
   errors?: {
@@ -127,4 +128,36 @@ export async function deleteProduct(id: string) {
 
   // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 
+}
+
+export async function authenticate(data: any) {
+  try {
+    await signIn('credentials', data);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+export async function logout() {
+  try {
+    await signOut();
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
 }

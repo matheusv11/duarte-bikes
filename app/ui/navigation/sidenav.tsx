@@ -11,6 +11,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Routes } from '@/app/types/routes';
 import { drawerWidth } from "@/app/constants/drawer";
+import { logout } from '@/app/lib/actions';
 
 const appRoutes: Routes = [
   {
@@ -114,6 +115,23 @@ const SideLinks = ({routes, pathname}: SideLinks) => (
           <LinkButton href={r.href} name={r.name} pathname={pathname} icon={r.icon}/>}
       </ListItem>
     ))}
+    <ListItem disablePadding>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          height: 40,
+          // background: pathname === href ? 'blue' : 'white'
+        }}
+      >
+        {/* {icon && <ListItemIcon sx={{ minWidth: '36px' }}>{icon}</ListItemIcon>} */}
+        <Button onClick={() => logout()} >
+          Logout
+        </Button>
+        {/* <ListItemText primary={"Logout"} primaryTypographyProps={{ textAlign: 'start', variant: 'body2' }} /> */}
+      </Box>
+    </ListItem>
   </List>
 );
 

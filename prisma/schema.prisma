@@ -19,6 +19,50 @@ datasource db {
 //   @@map(name: "products_types")
 // }
 
+model Bikes {
+    id            String    @default(cuid()) @id
+    model         String
+    image         String
+    quantity      Int
+    rents         Rents[]
+    @@map(name: "bikes")
+}
+
+model Users {
+  id            String    @default(cuid()) @id
+  name          String
+  kind          String // Or create a admin table
+  email         String    @unique
+  password      String
+  rents         Rents[]
+  @@map(name: "users")
+}
+
+// model Schedules {
+//   id              String    @default(cuid()) @id
+//   start  DateTime
+//   end    DateTime
+//   createdAt       DateTime  @default(now()) @map(name: "created_at")
+//   updatedAt       DateTime  @updatedAt @map(name: "updated_at")
+//   @@map(name: "schedules")
+// }
+
+model Rents {
+  id              String    @default(cuid()) @id
+  value           Float
+  schedule_start  DateTime
+  schedule_end    DateTime
+  rented          Boolean // Only to block other user to pick this bike while other is paying
+  paid            Boolean
+  createdAt       DateTime  @default(now()) @map(name: "created_at")
+  updatedAt       DateTime  @updatedAt @map(name: "updated_at")
+  user  Users?    @relation(fields: [userId], references: [id])
+  bike    Bikes?  @relation(fields: [bikeId], references: [id])
+  bikeId  String?
+  userId  String?
+  @@map(name: "rents")
+}
+
 model SelledProducts {
   id            String    @default(cuid()) @id
   custom_sold_value Float?
@@ -43,21 +87,21 @@ model Products {
   @@map(name: "products")
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
-}
+// model Post {
+//   id        String     @default(cuid()) @id
+//   title     String
+//   content   String?
+//   published Boolean @default(false)
+//   author    User?   @relation(fields: [authorId], references: [id])
+//   authorId  String?
+// }
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  @@map(name: "users")
-}
+// model User { // Rodar
+//   id            String       @default(cuid()) @id
+//   name          String?
+//   email         String?   @unique
+//   createdAt     DateTime  @default(now()) @map(name: "created_at")
+//   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+//   posts         Post[]
+//   @@map(name: "users")
+// }
