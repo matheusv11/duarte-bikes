@@ -1,14 +1,15 @@
-import NextAuth from 'next-auth';
+import NextAuth from "next-auth"
+// import GitHub from "next-auth/providers/github"
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import type { User } from '@/app/types/user';
+import prisma from "@/app/lib/prisma";
 import { authConfig } from './auth.config';
-import primsa from "@/app/lib/prisma";
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
-    const user = await primsa.users.findUnique({
+    const user = await prisma.users.findUnique({
       where: {
         email: email
       }
@@ -20,8 +21,9 @@ async function getUser(email: string): Promise<User | undefined> {
   }
 }
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -36,12 +38,11 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
-          if (passwordsMatch) return user;
+          if (passwordsMatch) return user; // BD bate com json de retorno
         }
-
         console.log('Invalid credentials');
         return null;
       },
     }),
   ],
-});
+})
