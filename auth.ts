@@ -7,11 +7,11 @@ import type { User } from '@/app/types/user';
 import prisma from "@/app/lib/prisma";
 import { authConfig } from './auth.config';
 
-async function getUser(email: string): Promise<User | undefined> {
+async function getUser(cellphone: string): Promise<User | undefined> {
   try {
     const user = await prisma.users.findUnique({
       where: {
-        email: email
+        cellphone: cellphone
       }
     })
     return user || undefined;
@@ -26,15 +26,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   providers: [
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials) { // Tentar tipar
         const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
+          .object({ cellphone: z.string(), password: z.string().min(6) }) // Validar como telefone
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
+          const { cellphone, password } = parsedCredentials.data;
 
-          const user = await getUser(email);
+          const user = await getUser(cellphone);
           if (!user) return null;
 
           const passwordsMatch = await bcrypt.compare(password, user.password);

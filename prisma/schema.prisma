@@ -32,7 +32,7 @@ model Users {
   id            String    @default(cuid()) @id
   name          String
   kind          String // Or create a admin table
-  email         String    @unique
+  cellphone     String    @unique
   password      String
   rents         Rents[]
   @@map(name: "users")

@@ -1,22 +1,36 @@
 const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
 
+
+const dataUsers = [
+  {
+    cellphone: "89988191796",
+    kind: "admin",
+    name: "pedro",
+    password: "senha1"
+  },
+  {
+    cellphone: "86988191796",
+    kind: "user",
+    name: "joão",
+    password: "senha2"
+  }
+]
+
 async function seedUsers(prisma) {
 
   try {
-    const email = "math2@gmail.com"
-    const kind = "user"
-    const name = "pedro"
-    const hashedPassword = await bcrypt.hash("senha2", 10);
 
-    await prisma.users.create({
-      data: {
-        email: email,
-        kind: kind,
-        name: name,
-        password: hashedPassword,
-      }
-    })
+    const insertData = await Promise.all(
+      dataUsers.map(async (user) => {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        return {...user, password: hashedPassword}
+      }),
+    );
+
+    await prisma.users.createMany({
+      data: insertData
+    });
 
     return true;
   } catch (error) {
@@ -26,7 +40,6 @@ async function seedUsers(prisma) {
 }
 
 async function main() {
-  console.log("CHEGUEI")
   const prisma = new PrismaClient();
 
   await seedUsers(prisma);

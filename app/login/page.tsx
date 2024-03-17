@@ -16,9 +16,11 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 //   description: "Locação de bikes",
 // };
 
+// Adicionar mascara de telefone
+
 export default function Login() {
 
-  const [email, setEmail] = useState<string>("");
+  const [cellphone, setCellphone] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -28,7 +30,7 @@ export default function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const error = await authenticate({email, password}); // Só retorna uma string, melhorar e desestruturar um error
+    const error = await authenticate({cellphone, password}); // Só retorna uma string, melhorar e desestruturar um error
     if (error) setError(error)
     setLoading(false);
   }
@@ -37,6 +39,7 @@ export default function Login() {
   const handleMouseDownPassword = () => setShowPassword(!false);
 
   // Solução sem grid, mas não é tão responsiva
+  // Setar um max e min width, como no final-example
   return (
     <Box sx={{margin: 'auto', width: 450, p: 1}} component="form" onSubmit={handleLogin}>
       <Paper elevation={6} sx={{
@@ -58,12 +61,12 @@ export default function Login() {
 
         <TextField 
           required
-          type='email'
+          type='tel'
           fullWidth
-          label="Email"
+          label="Celular"
           variant="outlined"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          onChange={(e) => setCellphone(e.target.value)}
+          value={cellphone}
         />
         <TextField
           required

@@ -18,6 +18,10 @@ export type State = {
   message?: string | null;
 };
 
+type AuthenticateData = {
+  cellphone: string;
+  password: string;
+}
 
 const message = "Insira um valor acima de 0.";
 
@@ -130,7 +134,8 @@ export async function deleteProduct(id: string) {
 
 }
 
-export async function authenticate(data: any) {
+
+export async function authenticate(data: AuthenticateData) {
   try {
     await signIn('credentials', data);
   } catch (error) {
