@@ -2,8 +2,8 @@ import type { NextAuthConfig } from 'next-auth';
 
 const publicLoggedPath = ["/"]
 const publicUnloggedPath = ["/", "/login", "/register"]
-const adminPrivatePath = ["/admin"]
-const userPrivatePath = ["/user"]
+// const adminPrivatePath = ["/admin"]
+// const userPrivatePath = ["/user"]
 
 export const authConfig = {
   // theme: {
@@ -20,16 +20,14 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLogged = !!auth?.user;
-      if(!isLogged && publicUnloggedPath.includes(nextUrl.pathname)) return true;
-      if(isLogged && publicLoggedPath.includes(nextUrl.pathname)) return true;
+      
       if(!isLogged && !publicUnloggedPath.includes(nextUrl.pathname)) return false;
+      if(isLogged && publicLoggedPath.includes(nextUrl.pathname)) return true;
 
-      const isAdmin = auth?.user.kind === 'admin';
-
-      if(isAdmin && !adminPrivatePath.includes(nextUrl.pathname)) {
+      if(auth?.user.kind === 'admin' && !nextUrl.pathname.startsWith('/admin') ) {
         return Response.redirect(new URL('/admin', nextUrl)); 
       }
-      else if(!isAdmin && !userPrivatePath.includes(nextUrl.pathname)) {
+      else if(!auth?.user.kind === 'user' && !nextUrl.pathname.startsWith('/user') ) {
         return Response.redirect(new URL('/user', nextUrl));
       }
 
