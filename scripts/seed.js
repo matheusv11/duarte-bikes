@@ -7,13 +7,17 @@ const dataUsers = [
     cellphone: "89988191796",
     kind: "admin",
     name: "pedro",
-    password: "senha1"
+    password: "senha1",
+    address: 'Rua 1',
+    cpf_cnpj: '192.168.203-72'
   },
   {
     cellphone: "86988191796",
     kind: "user",
     name: "joão",
-    password: "senha2"
+    password: "senha2",
+    address: 'Rua 2',
+    cpf_cnpj: '192.168.203-72'
   }
 ]
 

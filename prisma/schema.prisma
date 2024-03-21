@@ -31,6 +31,8 @@ model Bikes {
 model Users {
   id            String    @default(cuid()) @id
   name          String
+  address       String
+  cpf_cnpj      String
   kind          String // Or create a admin table
   cellphone     String    @unique
   password      String

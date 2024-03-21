@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import prisma from './prisma'
 import { signIn, signOut } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt from 'bcrypt';
+import { put } from '@vercel/blob';
 
 export type State = {
   errors?: {
@@ -41,8 +43,28 @@ const FormSchema = z.object({
   date: z.string(),
 });
 
+const UserFormSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1),
+  cpf: z.string(),
+  address: z.string(),
+  password: z.string(),
+  // image: z.string(),
+  image: z.any(),
+  cellphone: z.string(),
+  // customerId: z.string({
+  //   invalid_type_error: 'Please select a customer.',
+  // }),  
+  // status: z.enum(['pending', 'paid'], {
+  //   invalid_type_error: 'Please select an invoice status.',
+  // }),
+  date: z.string(),
+});
+
 const CreateProduct = FormSchema.omit({ id: true, date: true });
 const UpdateProduct = FormSchema.omit({ date: true, id: true });
+const CreateUser    = UserFormSchema.omit({ date: true, id: true });
+
 
 export async function createProduct(data: any) { // Tipar
   const validatedFields = CreateProduct.safeParse(data);
@@ -134,7 +156,50 @@ export async function deleteProduct(id: string) {
 
 }
 
+export async function register(data: any) { // Tipar
 
+  const validatedFields = CreateUser.safeParse(data);
+
+  if (!validatedFields.success) {
+    console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Campos faltando. Erro ao criar conta.',
+    };
+  }
+ 
+  const { address, cpf, cellphone, image, password, name,  } = validatedFields.data;
+ 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const file = image.get('file')
+
+  try {
+    
+    await put(file.name, file, {
+      access: 'public',
+    });
+    
+    await prisma.users.create({
+      data: {
+        name: name,
+        address: address,
+        cpf_cnpj: cpf,
+        cellphone: cellphone,
+        kind: 'user',
+        password: hashedPassword,
+  
+      },
+    })
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // revalidatePath('/admin/products');
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+}
 export async function authenticate(data: AuthenticateData) {
   try {
     await signIn('credentials', data);
