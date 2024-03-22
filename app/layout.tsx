@@ -13,6 +13,11 @@ const ReduxProvider = dynamic(() => import("@/app/store/redux-provider"), {
 });
 
 
+const PickerProvider = dynamic(() => import("@/app/providers/date-picker-provider"), {
+  ssr: false
+});
+
+
 export const metadata: Metadata = {
   title: "Duarte Bikes",
   description: "Locação de bikes",
@@ -30,7 +35,9 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <ReduxProvider>
+              <PickerProvider>
               {children}
+              </PickerProvider>
             </ReduxProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

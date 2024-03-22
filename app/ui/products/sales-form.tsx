@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, Autocomplete, CircularProgress, } from '@mui/material';
-import { createProduct, updateProduct } from '@/app/lib/actions';
+import { createSelledProduct, updateProduct } from '@/app/lib/actions';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/app/store";
 import { setProductState } from "@/app/store/productSlice";
@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Product } from '@/app/types/products';
 import { fetchProducts } from '@/app/lib/data';
 import { useDebouncedCallback } from 'use-debounce';
-
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 type FormError = {
   name?: string[] | undefined;
@@ -44,10 +44,9 @@ const initialForm = { // Tipar
   product: {
     label: ''
   },
-  description: "",
-  buyed_value: 0,
-  sold_value: 0,
+  date: new Date(),
   quantity: 0,
+  sold_value: 0,
 }
 
 
@@ -63,8 +62,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormError>({});// Tipar
 
-  const handleForm = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({...form, [e.target.name]: e.target.value});
+  const handleForm = (field: string, val: string) => {
+    setForm({...form, [field]: val});
   }
 
   const onAutocompleteChange = (e: any, value: string[]) => {
@@ -101,7 +100,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   const handleCreate = async() => {
     setLoading(true);
 
-    const response = await createProduct(form);
+    const response = await createSelledProduct(form);
     if(response?.errors)  {
       console.log("Response", response);
       setLoading(false);
@@ -183,6 +182,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
           <Autocomplete
             disablePortal
             fullWidth
+            aria-required
             id="product"
             value={form.product}
             onChange={onAutocompleteChange}
@@ -209,44 +209,6 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
               }} />
             }
           />
-
-          <TextField
-            fullWidth
-            id="description"
-            name="description"
-            label="Descrição"
-            placeholder="Descrição"
-            value={form.description}
-            onChange={handleForm}
-            error={!!errors.description}
-            helperText={errors.description && errors.description.map(e => e)}
-          />
-          <TextField
-            fullWidth
-            required
-            type="number"
-            id="buyed_value"
-            name="buyed_value"
-            label="Valor comprado"
-            placeholder="Valor comprado"
-            value={form.buyed_value}
-            onChange={handleForm}
-            error={!!errors.buyed_value}
-            helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
-          />
-          <TextField
-            fullWidth
-            required
-            type="number"
-            id="sold_value"
-            name="sold_value"
-            label="Valor vendido"
-            placeholder="Valor vendido"
-            value={form.sold_value}
-            onChange={handleForm}
-            error={!!errors.sold_value}
-            helperText={errors.sold_value && errors.sold_value.map(e => e)}
-          />
           <TextField
             fullWidth
             required
@@ -256,10 +218,28 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
             label="Quantidade"
             placeholder="Quantidade"
             value={form.quantity}
-            onChange={handleForm}
+            onChange={(e) => handleForm('quantity', e.target.value)}
             error={!!errors.quantity}
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />
+          <TextField
+            fullWidth
+            required
+            type="number"
+            id="value"
+            name="value"
+            label="Valor"
+            placeholder="Valor"
+            value={form.sold_value}
+            onChange={(e) => handleForm('sold_value', e.target.value)}
+            error={!!errors.sold_value}
+            helperText={errors.sold_value && errors.sold_value.map(e => e)}
+          />
+          <DateTimePicker
+            value={form.date}
+            onChange={(newValue) => setForm({...form, date: newValue})}
+          />
+
           <Box display="flex" gap={2} justifyContent="center"> 
             <Button type="submit" variant="contained" disabled={loading}>{product ? "Editar" : "Criar"}</Button>
             <Button type="button" color='error' variant="contained" disabled={loading} onClick={handleDrawer}>cancelar</Button>

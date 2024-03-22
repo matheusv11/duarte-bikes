@@ -43,6 +43,16 @@ const FormSchema = z.object({
   date: z.string(),
 });
 
+const SelledProductFormSchema = z.object({
+  id: z.string(),
+  product: z.any(), // Objeto
+  sold_value: z.coerce.number().gt(0, { message: message }),
+  quantity: z.coerce.number().gt(0, { message: message }),
+  // date: z.string(),
+  date: z.date(),
+});
+
+
 const UserFormSchema = z.object({
   id: z.string(),
   name: z.string().min(1),
@@ -62,6 +72,7 @@ const UserFormSchema = z.object({
 });
 
 const CreateProduct = FormSchema.omit({ id: true, date: true });
+const CreateSelledProduct = SelledProductFormSchema.omit({ id: true, date: true });
 const UpdateProduct = FormSchema.omit({ date: true, id: true });
 const CreateUser    = UserFormSchema.omit({ date: true, id: true });
 
@@ -154,6 +165,42 @@ export async function deleteProduct(id: string) {
 
   // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 
+}
+
+export async function createSelledProduct(data: any) { // Tipar
+
+  const validatedFields = CreateSelledProduct.safeParse(data);
+
+  if (!validatedFields.success) {
+    console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Campos faltando. Erro ao criar produto.',
+    };
+  }
+ 
+  const { date, product, quantity, sold_value } = validatedFields.data;
+ 
+
+  console.log("FIELDS", validatedFields.data);
+  
+  try {
+    await prisma.selledProducts.create({ // Melhorar inserção
+      data: {
+        createdAt: date,
+        productId: product.id,
+        custom_sold_value: sold_value || null,
+        quantity: quantity,
+      },
+    })
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // revalidatePath('/admin/products');
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
 
 export async function register(data: any) { // Tipar
