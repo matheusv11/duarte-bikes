@@ -39,7 +39,7 @@ export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProduc
       {
         ...p,
         edit: p,
-        delete: p.id,
+        delete: {id: p.id, name: p.name},
         createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
         updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
       }

@@ -1,5 +1,5 @@
 'use client'
-import { Button, IconButton, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
@@ -33,7 +33,8 @@ const CustomToolbar = ({toggleDrawer}: any) => {
 
 export default function Table({loading, products, currentPage, totalCount, rows, refetch, toggleDrawer }: ITable) {
   const searchParams = useSearchParams();
-
+  const [deleProduct, setDeleProduct] = useState<any>(null);
+  
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
 
@@ -78,8 +79,9 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     replace(`${pathname}?${params.toString()}`);
   }
 
-  const delProduct = async (id: string) => {
-    await deleteProduct(id)
+  const delProduct = async () => {
+    await deleteProduct(deleProduct.id);
+    setDeleProduct(null);
     refetch();
   }
   const columns: MUIDataTableColumnDef[] = [ // Tipar // Alinhar coluna com oq retornar do banco
@@ -178,8 +180,8 @@ export default function Table({loading, products, currentPage, totalCount, rows,
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={() => delProduct(val)}
-            edge="start"
+            onClick={() => setDeleProduct(val)}
+            // edge="start"
           // sx={{ mr: 2, ...(open && { display: 'none' }) }}
           >
             <FaTrash />
@@ -214,15 +216,40 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     // selectableRows: 'none',
   };
 
+  const handleClose = () => setDeleProduct(null);
 
   return (
-    <MUIDataTable
-      title={"Produtos"}
-      data={products}
-      columns={columns}
-      options={options}
-    />
+    <>
+      <MUIDataTable
+        title={"Produtos"}
+        data={products}
+        columns={columns}
+        options={options}
+      />
 
+    <Dialog
+        open={!!deleProduct}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Use Google's location service?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Let Google help apps determine location. This means sending anonymous
+            location data to Google, even when no apps are running.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Fechar</Button>
+          <Button color="error" onClick={delProduct} autoFocus>
+            Apagar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
   
 }

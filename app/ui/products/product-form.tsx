@@ -2,7 +2,7 @@
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/material';
 import { createProduct, updateProduct } from '@/app/lib/actions';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/app/store";
 import { setProductState } from "@/app/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
@@ -43,6 +43,16 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setForm({...form, [e.target.name]: e.target.value});
   }
 
+  const handleOpen = useMemo(() => (open || !!product), [open, product]);
+  const handleDrawer = () => {
+    if(product) {
+
+      dispatch(setProductState(null as any));
+    }else {
+      toggleDrawer(false);
+    }
+  }
+
   const handleCreate = async() => {
     setLoading(true);
 
@@ -58,7 +68,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    toggleDrawer(false);
+    handleDrawer();
     refetch();
   }
 
@@ -90,17 +100,6 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     }
   }
 
-  const toggleAccordion = () => {
-    console.log("Toggle", expanded);
-    if(product && !expanded) {
-      setExpanded(true);
-    }else if(!expanded ) {
-      setExpanded(true);
-    } else if (expanded) {
-      setExpanded(false);
-    }
-  }
-
   useEffect(() => {
     if(product) {
       setForm(product as any)
@@ -113,8 +112,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   return (
     <Drawer
       anchor='right'
-      open={open}
-      onClose={() => toggleDrawer(false)}
+      open={handleOpen}
+      onClose={handleDrawer}
       PaperProps={{
         sx: { width: '100%', maxWidth: 450, p: 2 },
       }}
@@ -126,7 +125,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
             </Typography>
             <IconButton
             size="small"
-            onClick={() => toggleDrawer(false)}
+            onClick={handleDrawer}
             >
               <CloseIcon />
             </IconButton>
@@ -196,7 +195,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
           />
           <Box display="flex" gap={2} justifyContent="center"> 
             <Button type="submit" variant="contained" disabled={loading}>{product ? "Editar" : "Criar"}</Button>
-            <Button type="button" color='error' variant="contained" disabled={loading} onClick={() => toggleDrawer(false)}>cancelar</Button>
+            <Button type="button" color='error' variant="contained" disabled={loading} onClick={handleDrawer}>cancelar</Button>
           </Box>
 
       </Box>
