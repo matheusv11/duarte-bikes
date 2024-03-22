@@ -193,8 +193,9 @@ export default function Table({loading, products, currentPage, totalCount, rows,
 
   const options: MUIDataTableOptions = { // Maybe memoized component
     filterType: 'checkbox',
+    selectableRows: 'none',
     rowsPerPage: rows,
-    // responsive: 'simple',
+    responsive: 'stacked' as any,
     rowsPerPageOptions: [5, 10, 20],
     onChangePage: createPageURL,
     onChangeRowsPerPage: changeRows,
@@ -213,7 +214,6 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     //   console.log("Mudança")
     // },
     // customSearchRender: debounceSearchRender(500),
-    // selectableRows: 'none',
   };
 
   const handleClose = () => setDeleProduct(null);
@@ -234,12 +234,11 @@ export default function Table({loading, products, currentPage, totalCount, rows,
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {`Tem certeza que deseja deletar ${deleProduct?.name}`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
+            A ação seguinte não será reversível
           </DialogContentText>
         </DialogContent>
         <DialogActions>
