@@ -32,6 +32,11 @@ const appRoutes: Routes = [
     icon: <InboxIcon/>
   },
   {
+    name: 'Vendas',
+    href: '/admin/sales',
+    icon: <InboxIcon/>
+  },
+  {
     name: 'Clientes',
     href: '/admin/clients',
     icon: <MailIcon/>

@@ -1,11 +1,12 @@
 'use client'
 
-import { Button, TextField, Grid, Accordion, AccordionSummary,AccordionDetails, } from '@mui/material';
+import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/material';
 import { createProduct, updateProduct } from '@/app/lib/actions';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useAppSelector, useAppDispatch } from "@/app/store";
 import { setProductState } from "@/app/store/productSlice";
+import CloseIcon from '@mui/icons-material/Close';
+
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
   name: "",
@@ -24,10 +25,12 @@ type FormError = {
 }
 
 interface IProductForm {
+  open: boolean;
   refetch: () => void;
+  toggleDrawer: (open: boolean) => void;
 }
 
-export default function ProductForm({ refetch }: IProductForm) {
+export default function ProductForm({open, refetch, toggleDrawer }: IProductForm) {
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
 
@@ -55,6 +58,7 @@ export default function ProductForm({ refetch }: IProductForm) {
     setLoading(false);
     setErrors({});
     setForm(initialForm);
+    toggleDrawer(false);
     refetch();
   }
 
@@ -105,96 +109,97 @@ export default function ProductForm({ refetch }: IProductForm) {
       setExpanded(false)
     }
   }, [product]);
-  
+
   return (
-    <Accordion sx={{width: '100%'}} expanded={expanded}>
-      <AccordionSummary
-      onClick={toggleAccordion}
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1-content"
-        id="panel1-header"
-      >
-        {`${product ? "Editar" : "Cadastrar"}  produto`}
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid container spacing={2} alignItems="center" component="form" onSubmit={handleSubmit}>
-          <Grid item md={2} xs={6}>
-            <TextField
-              fullWidth
-              required
-              id="name"
-              name="name"
-              label="Nome"
-              placeholder="Nome"
-              value={form.name}
-              onChange={handleForm}
-              error={!!errors.name}
-              helperText={errors.name && errors.name.map(e => e)}
-            />
-          </Grid>
-          <Grid item md={2} xs={6}>
-            <TextField
-              fullWidth
-              id="description"
-              name="description"
-              label="Descrição"
-              placeholder="Descrição"
-              value={form.description}
-              onChange={handleForm}
-              error={!!errors.description}
-              helperText={errors.description && errors.description.map(e => e)}
-            />
-          </Grid>
-          <Grid item md={1.5} xs={6}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              id="buyed_value"
-              name="buyed_value"
-              label="Valor comprado"
-              placeholder="Valor comprado"
-              value={form.buyed_value}
-              onChange={handleForm}
-              error={!!errors.buyed_value}
-              helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
-            />
-          </Grid>
-          <Grid item md={1.5} xs={6}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              id="sold_value"
-              name="sold_value"
-              label="Valor vendido"
-              placeholder="Valor vendido"
-              value={form.sold_value}
-              onChange={handleForm}
-              error={!!errors.sold_value}
-              helperText={errors.sold_value && errors.sold_value.map(e => e)}
-            />
-          </Grid>
-          <Grid item md={1.5} xs={6}>
-            <TextField
-              fullWidth
-              required
-              type="number"
-              id="quantity"
-              name="quantity"
-              label="Quantidade"
-              placeholder="Quantidade"
-              value={form.quantity}
-              onChange={handleForm}
-              error={!!errors.quantity}
-              helperText={errors.quantity && errors.quantity.map(e => e)}
-            />
-          </Grid>
-          <Grid item md={1} xs={6}>
+    <Drawer
+      anchor='right'
+      open={open}
+      onClose={() => toggleDrawer(false)}
+      PaperProps={{
+        sx: { width: '100%', maxWidth: 450, p: 2 },
+      }}
+    >
+      <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleSubmit}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="body1" fontWeight="bold">
+              Criar Produto
+            </Typography>
+            <IconButton
+            size="small"
+            onClick={() => toggleDrawer(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          <TextField
+            fullWidth
+            required
+            id="name"
+            name="name"
+            label="Nome"
+            placeholder="Nome"
+            value={form.name}
+            onChange={handleForm}
+            error={!!errors.name}
+            helperText={errors.name && errors.name.map(e => e)}
+          />
+          <TextField
+            fullWidth
+            id="description"
+            name="description"
+            label="Descrição"
+            placeholder="Descrição"
+            value={form.description}
+            onChange={handleForm}
+            error={!!errors.description}
+            helperText={errors.description && errors.description.map(e => e)}
+          />
+          <TextField
+            fullWidth
+            required
+            type="number"
+            id="buyed_value"
+            name="buyed_value"
+            label="Valor comprado"
+            placeholder="Valor comprado"
+            value={form.buyed_value}
+            onChange={handleForm}
+            error={!!errors.buyed_value}
+            helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
+          />
+          <TextField
+            fullWidth
+            required
+            type="number"
+            id="sold_value"
+            name="sold_value"
+            label="Valor vendido"
+            placeholder="Valor vendido"
+            value={form.sold_value}
+            onChange={handleForm}
+            error={!!errors.sold_value}
+            helperText={errors.sold_value && errors.sold_value.map(e => e)}
+          />
+          <TextField
+            fullWidth
+            required
+            type="number"
+            id="quantity"
+            name="quantity"
+            label="Quantidade"
+            placeholder="Quantidade"
+            value={form.quantity}
+            onChange={handleForm}
+            error={!!errors.quantity}
+            helperText={errors.quantity && errors.quantity.map(e => e)}
+          />
+          <Box display="flex" gap={2} justifyContent="center"> 
             <Button type="submit" variant="contained" disabled={loading}>{product ? "Editar" : "Criar"}</Button>
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+            <Button type="button" color='error' variant="contained" disabled={loading} onClick={() => toggleDrawer(false)}>cancelar</Button>
+          </Box>
+
+      </Box>
+    </Drawer>
   )
 }

@@ -16,6 +16,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]); // Nem precisa do redux nesse caso, mas deixa para exemplo
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const currentPage = Number(searchParams.get('page')) || 1;
   const query = searchParams.get('query') || '';
@@ -40,10 +41,20 @@ export default function Page() {
     fetchAllProducts();
   }, [fetchAllProducts]);
 
+  const handleDrawer = (open: boolean) => setOpenDrawer(open);
+
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      <ProductForm refetch={fetchAllProducts}/>
-      <ProductsTable refetch={fetchAllProducts} products={products} totalCount={totalCount} loading={loading} currentPage={currentPage} rows={rows}/>
+      <ProductForm open={openDrawer} toggleDrawer={handleDrawer} refetch={fetchAllProducts}/>
+      <ProductsTable
+        toggleDrawer={handleDrawer}
+        refetch={fetchAllProducts}
+        products={products}
+        totalCount={totalCount}
+        loading={loading}
+        currentPage={currentPage}
+        rows={rows}
+      />
     </Box>
   );
 }

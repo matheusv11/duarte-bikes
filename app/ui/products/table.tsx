@@ -1,5 +1,5 @@
 'use client'
-import { IconButton, LinearProgress } from "@mui/material";
+import { Button, IconButton, LinearProgress } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useEffect, useMemo, useState } from "react";
@@ -18,8 +18,20 @@ interface ITable {
   totalCount: number;
   rows: number;
   refetch: () => void;
+  toggleDrawer: (open: boolean) => void;
 }
-export default function Table({loading, products, currentPage, totalCount, rows, refetch }: ITable) {
+
+const CustomToolbar = ({toggleDrawer}: any) => {
+  return(
+     <>
+      <Button sx={{ml: 2}} variant="contained" onClick={() => toggleDrawer(true)}>
+        Criar
+      </Button>
+     </>
+   );
+  }
+
+export default function Table({loading, products, currentPage, totalCount, rows, refetch, toggleDrawer }: ITable) {
   const searchParams = useSearchParams();
 
   const dispatch = useAppDispatch();
@@ -164,14 +176,14 @@ export default function Table({loading, products, currentPage, totalCount, rows,
         setCellProps: () => ({ align: 'center' }),
         customBodyRender: (val, meta, updateValue) => (
           <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={() => delProduct(val)}
-          edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => delProduct(val)}
+            edge="start"
           // sx={{ mr: 2, ...(open && { display: 'none' }) }}
-        >
-          <FaTrash />
-        </IconButton>
+          >
+            <FaTrash />
+          </IconButton>
         )
       },
     },
@@ -180,6 +192,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
   const options: MUIDataTableOptions = { // Maybe memoized component
     filterType: 'checkbox',
     rowsPerPage: rows,
+    // responsive: 'simple',
     rowsPerPageOptions: [5, 10, 20],
     onChangePage: createPageURL,
     onChangeRowsPerPage: changeRows,
@@ -188,6 +201,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     serverSide: true,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
+    customToolbar: () =>  CustomToolbar({ toggleDrawer }),
     textLabels: {
       body: {
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'
