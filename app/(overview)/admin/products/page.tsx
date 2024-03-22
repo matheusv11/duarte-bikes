@@ -44,8 +44,7 @@ export default function Page() {
   const handleDrawer = (open: boolean) => setOpenDrawer(open);
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
-      <ProductForm open={openDrawer} toggleDrawer={handleDrawer} refetch={fetchAllProducts}/>
+    <>
       <ProductsTable
         toggleDrawer={handleDrawer}
         refetch={fetchAllProducts}
@@ -55,6 +54,7 @@ export default function Page() {
         currentPage={currentPage}
         rows={rows}
       />
-    </Box>
+      <ProductForm open={openDrawer} toggleDrawer={handleDrawer} refetch={fetchAllProducts}/>
+    </>
   );
 }
