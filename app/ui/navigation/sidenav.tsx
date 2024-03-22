@@ -46,6 +46,12 @@ const appRoutes: Routes = [
     href: '/admin/rentals',
     icon: <InboxIcon/>
   },
+  {
+    name: 'Logout',
+    action: logout,
+    href: '',
+    icon: <InboxIcon/>
+  }
 ];
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -64,6 +70,7 @@ interface SideNav {
 interface LinkButton {
   href: string;
   name: string;
+  action?: () => void;
   pathname: string;
   icon?: React.ReactNode;
 }
@@ -73,22 +80,40 @@ interface SideLinks {
   pathname: string;
 }
 
-const LinkButton = ({href, name, pathname, icon }: LinkButton) => (
-  <Link href={href} style={{width: '100%'}}>
+const LinkButton = ({href, action, name, pathname, icon }: LinkButton) => {
+  
+  const BtnContent = (
     <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        // width: '100%',
-        height: 40,
-        background: pathname === href ? 'blue' : 'white'
-      }}
-    >
-      {icon && <ListItemIcon sx={{ minWidth: '36px' }}>{icon}</ListItemIcon>}
-      <ListItemText primary={name} primaryTypographyProps={{ textAlign: 'start', variant: 'body2' }} />
-    </Box>
-  </Link>
-);
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      // width: '100%',
+      cursor: 'pointer',
+      p: 2,
+      height: 40,
+      color: pathname === href ? 'white' : 'black',
+      background: pathname === href ? 'orange' : 'white'
+    }}
+    onClick={() => {
+      if(action) action();
+    }}
+  >
+    {icon && <ListItemIcon sx={{ minWidth: '36px' }}>{icon}</ListItemIcon>}
+    <ListItemText primary={name} primaryTypographyProps={{ textAlign: 'start', variant: 'body2' }} />
+  </Box>
+  )
+  return(
+    <>
+    {action ?  BtnContent:  <Link href={href} style={{width: '100%'}}>
+    {BtnContent}
+   </Link>
+   }
+    </>
+  )
+
+
+ 
+};
 
 // Verificar se tá bom o desempenho do recursivo
 
@@ -103,7 +128,8 @@ const SideLinks = ({routes, pathname}: SideLinks) => (
               aria-controls="panel1-content"
               id="panel1-header"
               sx={{
-                background: pathname.split('/')[1] === r.href.split('/')[1] ? 'red' : 'white'
+                color: pathname.split('/')[1] === r.href.split('/')[1] ? 'white' : 'black',
+                background: pathname.split('/')[1] === r.href.split('/')[1] ? 'grey' : 'white'
               }}
             >
               <ListItemIcon>
@@ -117,26 +143,9 @@ const SideLinks = ({routes, pathname}: SideLinks) => (
             </AccordionDetails>
           </Accordion>
           :
-          <LinkButton href={r.href} name={r.name} pathname={pathname} icon={r.icon}/>}
+          <LinkButton action={r.action} href={r.href} name={r.name} pathname={pathname} icon={r.icon}/>}
       </ListItem>
     ))}
-    <ListItem disablePadding>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          height: 40,
-          // background: pathname === href ? 'blue' : 'white'
-        }}
-      >
-        {/* {icon && <ListItemIcon sx={{ minWidth: '36px' }}>{icon}</ListItemIcon>} */}
-        <Button onClick={() => logout()} >
-          Logout
-        </Button>
-        {/* <ListItemText primary={"Logout"} primaryTypographyProps={{ textAlign: 'start', variant: 'body2' }} /> */}
-      </Box>
-    </ListItem>
   </List>
 );
 
