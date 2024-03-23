@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import SalesTable from '@/app/ui/products/sales-table'
 import SalesForm from '@/app/ui/products/sales-form'
 import {useState, useEffect, useCallback } from 'react';
-import { fetchProducts } from '@/app/lib/data';
+import { fetchSelledProducts } from '@/app/lib/data';
 import { Product } from '@/app/types/products';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 
@@ -26,7 +26,7 @@ export default function Page() {
     setLoading(true);
     setProducts([]);
     try{
-      const res = await fetchProducts({ query: query, page: currentPage, perPage: rows });
+      const res = await fetchSelledProducts({ query: query, page: currentPage, perPage: rows });
       setProducts(res.products)
       setTotalCount(res.count);
     }

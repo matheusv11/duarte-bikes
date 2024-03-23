@@ -53,3 +53,68 @@ export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProduc
     throw new Error('Failed to fetch revenue data.');
   }
 }
+
+export async function fetchSelledProducts({query, page = 1, perPage = 5 }: FetchProducts) {
+  noStore();
+
+  // Add month & year filter
+  const skip = (page - 1) * perPage;
+  const take = perPage;
+
+  try {
+    const countProducts = await prisma.selledProducts.count({
+      where: {
+        product: {
+          name: query || undefined
+        }
+      }
+    }); // Talvez passar pra outro metodo, evitando toda request
+
+    const products = await prisma.selledProducts.findMany({
+      skip: skip,
+      take: take,
+      where: {
+        product: {
+          name: query || undefined
+        }
+      },
+      include: {
+        product: {
+          select: {
+            name: true,
+            sold_value: true
+          }
+        }
+      }
+    });
+
+    const formatedProducts = products
+    .map(p => (
+      {
+        ...p,
+        edit: {
+          product: {
+            label: p.product?.name,
+            id: p.productId
+          },
+          date: p.createdAt,
+          quantity: p.quantity,
+          sold_value: p.custom_sold_value || p.product?.sold_value,
+        },
+        delete: {id: p.id, name: p.product?.name},
+        product_name: p.product?.name,
+        product_value: p.product?.sold_value,
+        sold_value: p.custom_sold_value || p.product?.sold_value,
+        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
+        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+      }
+    ))
+    return {
+      products: formatedProducts,
+      count: countProducts
+    }; // Tipar bem o retorno
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}

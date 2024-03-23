@@ -94,32 +94,8 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     //   }
     // },
     {
-      name: "name",
+      name: "product_name",
       label: "Produto",
-      options: {
-        filter: true,
-        sort: true,
-      }
-    },
-    {
-      name: "description",
-      label: "Descrição",
-      options: {
-        filter: true,
-        sort: true,
-      }
-    },
-    {
-      name: "buyed_value",
-      label: "Valor comprado",
-      options: {
-        filter: true,
-        sort: true,
-      }
-    },
-    {
-      name: "sold_value",
-      label: "Valor vendido",
       options: {
         filter: true,
         sort: true,
@@ -128,6 +104,22 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     {
       name: "quantity",
       label: "Quantidade",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "product_value",
+      label: "Valor produto",
+      options: {
+        filter: true,
+        sort: true,
+      }
+    },
+    {
+      name: "sold_value",
+      label: "Valor vendido",
       options: {
         filter: true,
         sort: true,

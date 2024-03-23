@@ -33,6 +33,7 @@ model Users {
   name          String
   address       String
   cpf_cnpj      String
+  // confirmed     Boolean
   kind          String // Or create a admin table
   cellphone     String    @unique
   password      String

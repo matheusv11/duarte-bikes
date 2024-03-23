@@ -52,7 +52,7 @@ const initialForm = { // Tipar
 
 export default function ProductForm({open, refetch, toggleDrawer }: IProductForm) {
   const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.product);
+  const product = useAppSelector((state) => state.product.product); // Tá reutilizando o mesmo state do redux, usar outro
   const [products, setProducts] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -135,6 +135,10 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     refetch()
   }
 
+  useEffect(() => {
+    console.log("FORM", form)
+  }, [form])
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(product) {
@@ -156,6 +160,15 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
       getProducts()
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    console.log("produto", product)
+
+    if(product) {
+      setForm(product as any);
+      toggleDrawer(true);
+    }
+  }, [product]);
 
   return (
     <Drawer
