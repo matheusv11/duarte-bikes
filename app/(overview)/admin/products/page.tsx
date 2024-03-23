@@ -1,8 +1,8 @@
 "use client" // Temporário
 
 import { Box } from '@mui/material';
-import ProductsTable from '@/app/ui/products/table'
-import ProductForm from '@/app/ui/products/product-form'
+import ProductsTable from '@/app/components/products/table'
+import ProductForm from '@/app/components/products/product-form'
 import {useState, useEffect, useCallback } from 'react';
 import { fetchProducts } from '@/app/lib/data';
 import { Product } from '@/app/types/products';

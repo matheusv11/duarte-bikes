@@ -1,4 +1,4 @@
-import styles from "@/app/ui/page.module.css";
+import styles from "@/app/components/page.module.css";
 import { Box, Typography } from '@mui/material';
 
 export default function Home() {

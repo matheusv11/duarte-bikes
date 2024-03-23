@@ -1,6 +1,6 @@
 'use client'; // Tentar transformar em server
 
-// import styles from "@/app/ui/page.module.css";
+// import styles from "@/app/components/page.module.css";
 import Image from 'next/image';
 import logo from '@/public/images/instagram.webp';
 import {Paper, Box, Button, Typography, TextField, Avatar, Grid, IconButton, InputAdornment } from '@mui/material';

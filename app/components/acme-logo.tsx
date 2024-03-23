@@ -1,5 +1,5 @@
 import { FaBeer } from "react-icons/fa";
-import { lusitana } from '@/app/ui/fonts';
+import { lusitana } from '@/app/components/fonts';
 
 export default function AcmeLogo() {
   return (

@@ -3,8 +3,8 @@
  // Melhorar esse componente
 
 import { Box } from "@mui/material"
-import SideNav from "@/app/ui/navigation/sidenav";
-import AppBar from '@/app/ui/navigation/appbar'
+import SideNav from "@/app/components/navigation/sidenav";
+import AppBar from '@/app/components/navigation/appbar'
 import { useState } from "react";
 import { styled } from '@mui/material/styles';
 import { drawerWidth } from "@/app/constants/drawer";

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import "@/app/ui/globals.css";
-import { inter } from '@/app/ui/fonts';
+import "@/app/components/globals.css";
+import { inter } from '@/app/components/fonts';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '@/app/ui/theme';
+import theme from '@/app/components/theme';
 import { CssBaseline} from "@mui/material";
-import styles from '@/app/ui/page.module.css'; // Deixar só o global
+import styles from '@/app/components/page.module.css'; // Deixar só o global
 import dynamic from "next/dynamic";
 
 const ReduxProvider = dynamic(() => import("@/app/store/redux-provider"), {

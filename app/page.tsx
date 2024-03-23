@@ -1,12 +1,12 @@
 'use client'
 import {Button, Grid, Box, Typography } from '@mui/material';
 import Link from 'next/link';
-import AppBar from '@/app/ui/navigation/appbar'
+import AppBar from '@/app/components/navigation/appbar'
 import Image from 'next/image';
 import logo from '@/public/images/instagram.webp';
 import FlorPreta from '@/public/images/bora-bill.webp';
 import BoraBill from '@/public/images/flor-preta.webp';
-import Main from './ui/navigation/main';
+import Main from './components/navigation/main';
 import { longText } from '@/app/lib/mock';
 const open = false;
 const handleDrawer = () => {};

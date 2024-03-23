@@ -1,6 +1,6 @@
 'use client'
 
-import styles from "@/app/ui/page.module.css";
+import styles from "@/app/components/page.module.css";
 import {Paper, Box, Button, Typography, TextField, Grid } from '@mui/material';
 import Link from "next/link";
 import { authenticate } from '@/app/lib/actions';
