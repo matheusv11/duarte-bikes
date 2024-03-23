@@ -27,16 +27,16 @@ export const authConfig = {
       if(auth?.user.kind === 'admin' && !nextUrl.pathname.startsWith('/admin') ) {
         return Response.redirect(new URL('/admin', nextUrl)); 
       }
-      else if(!auth?.user.kind === 'user' && !nextUrl.pathname.startsWith('/user') ) {
+      else if(auth?.user.kind === 'user' && !nextUrl.pathname.startsWith('/user') ) {
         return Response.redirect(new URL('/user', nextUrl));
       }
 
       return true;
     },
     jwt({ token, user, trigger, session }) {
-      if(user) {
+      if(user?.id) {
         token.id = user.id
-        token.kind = user.kind  // Tipar
+        token.kind = user.kind
       }
       if (trigger === "update") token.name = session.user.name
       return token
