@@ -10,8 +10,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Routes } from '@/src/types/routes';
-import { drawerWidth } from "@/src/constants/drawer";
-import { logout } from '@/src/lib/actions';
+import { drawerWidth } from "@/src/lib/constants";
+import { logout } from '@/src/lib/authActions';
 
 const appRoutes: Routes = [
   {

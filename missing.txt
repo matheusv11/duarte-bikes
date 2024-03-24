@@ -26,6 +26,7 @@ register user page
 loading when acess page
 calculate ao paddings
 lowercase search and order
+rules in the form
 
 BANCO:
 selled_products? -> id, product_id(fk), quantity, custom_sold_value?(if admin gives a discount), created_at, updated_at  // this table might exist because the admin can put a custom sold value

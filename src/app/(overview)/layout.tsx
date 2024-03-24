@@ -7,7 +7,7 @@ import SideNav from "@/src/components/navigation/sidenav";
 import AppBar from '@/src/components/navigation/appbar'
 import { useState } from "react";
 import { styled } from '@mui/material/styles';
-import { drawerWidth } from "@/src/constants/drawer";
+import { drawerWidth } from "@/src/lib/constants";
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
