@@ -124,7 +124,7 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5, startDa
       }
     ))
     return {
-      totalValue: products.reduce((a, b) =>  a +  (b.custom_sold_value || b.product?.sold_value), 0),
+      totalValue: products.reduce((a, b) =>  a +  (b.custom_sold_value || b.product?.sold_value as any), 0),
       products: formatedProducts,
       count: countProducts
     }; // Tipar bem o retorno

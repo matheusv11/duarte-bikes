@@ -66,9 +66,9 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setForm({...form, [field]: val});
   }
 
-  const onAutocompleteChange = (e: any, value: string[]) => {
+  const onAutocompleteChange = (e: any, value: any) => {
     console.log("Valor", value)
-    setForm({...form, product: value});
+    setForm({...form, product: value}) ;
   };
 
   const getProducts = async (search?: string) => {
@@ -250,7 +250,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
           />
           <DateTimePicker
             value={form.date}
-            onChange={(newValue) => setForm({...form, date: newValue})}
+            onChange={(newValue) => setForm({...form, date: newValue as any})}
           />
 
           <Box display="flex" gap={2} justifyContent="center"> 

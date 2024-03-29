@@ -36,7 +36,7 @@ export async function createSelledProduct(data: any) { // Tipar
     };
   }
  
-  const { date, product, quantity, sold_value } = validatedFields.data;
+  const { date, product, quantity, sold_value } = validatedFields.data as any; 
  
 
   console.log("FIELDS", validatedFields.data);

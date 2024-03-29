@@ -57,7 +57,7 @@ export default function RegisterForm() {
       setSelectedImage(file);
       const formData = new FormData();
       formData.append('file', file)
-      handleUserData('image', formData);
+      handleUserData('image', formData as any);
       // FiletoBase64(file).then((f) => handleUserData('image', f as any));
     }
   };
