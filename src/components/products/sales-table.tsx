@@ -217,7 +217,7 @@ export default function Table({loading, products, currentPage, totalValue, total
     filterType: 'checkbox',
     selectableRows: 'none',
     rowsPerPage: rows,
-    responsive: 'stacked' as any,
+    responsive: 'vertical',
     rowsPerPageOptions: [5, 10, 20],
     onChangePage: createPageURL,
     onChangeRowsPerPage: changeRows,
