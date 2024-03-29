@@ -16,7 +16,7 @@
     "@mui/icons-material": "^5.15.11",
     "@mui/material": "^5.15.11",
     "@mui/material-nextjs": "^5.15.11",
-    "@mui/x-date-pickers": "^7.0.0",
+    "@mui/x-date-pickers-pro": "^7.0.0",
     "@prisma/client": "5.10.2",
     "@reduxjs/toolkit": "^2.2.1",
     "@vercel/blob": "^0.22.1",

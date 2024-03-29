@@ -17,18 +17,31 @@ export default function Page() {
   const [products, setProducts] = useState<Product[]>([]); // Nem precisa do redux nesse caso, mas deixa para exemplo
   const [totalCount, setTotalCount] = useState<number>(0);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [totalValue, setTotalValue] = useState(0);
 
   const currentPage = Number(searchParams.get('page')) || 1;
   const query = searchParams.get('query') || '';
   const rows = Number(searchParams.get('rows')) || 5;
-
+  const startDate = searchParams.get('start') || '';
+  const endDate =  searchParams.get('end') || '';
+  
   const fetchAllProducts = useCallback( async () => {
     setLoading(true);
     setProducts([]);
     try{
-      const res = await fetchSelledProducts({ query: query, page: currentPage, perPage: rows });
-      setProducts(res.products)
+      const res = await fetchSelledProducts(
+        { 
+          query: query,
+          page: currentPage,
+          perPage: rows,
+          startDate: startDate,
+          endDate: endDate
+        }
+      );
+      console.log("Responsa", res);
+      setProducts(res.products as any)
       setTotalCount(res.count);
+      setTotalValue(res.totalValue)
     }
     catch(e) {
       console.error(e); // Colocar alert
@@ -49,6 +62,7 @@ export default function Page() {
         toggleDrawer={handleDrawer}
         refetch={fetchAllProducts}
         products={products}
+        totalValue={totalValue}
         totalCount={totalCount}
         loading={loading}
         currentPage={currentPage}

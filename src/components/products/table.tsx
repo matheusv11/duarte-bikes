@@ -7,9 +7,8 @@ import { useDebouncedCallback } from 'use-debounce';
 import { FaPen, FaTrash } from "react-icons/fa";
 import { setProductState } from "@/src/store/productSlice";
 import { useAppDispatch, useAppSelector } from "@/src/store";
-import { deleteProduct } from "@/src/lib/actions";
+import { deleteProduct } from "@/src/lib/productActions";
 import { Product } from "@/src/types/products";
-
 
 interface ITable {
   products: Product[]
@@ -21,10 +20,14 @@ interface ITable {
   toggleDrawer: (open: boolean) => void;
 }
 
-const CustomToolbar = ({toggleDrawer}: any) => {
+const CustomToolbar = ({dispatch, toggleDrawer}: any) => {
+  const openDrawer = () => {
+    dispatch(setProductState(null as any));
+    toggleDrawer(true);
+  }
   return(
      <>
-      <Button sx={{ml: 2}} variant="contained" onClick={() => toggleDrawer(true)}>
+      <Button sx={{ml: 2}} variant="contained" onClick={openDrawer}>
         Criar
       </Button>
      </>
@@ -204,7 +207,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     serverSide: true,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
-    customToolbar: () =>  CustomToolbar({ toggleDrawer }),
+    customToolbar: () =>  CustomToolbar({dispatch, toggleDrawer }),
     textLabels: {
       body: {
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'

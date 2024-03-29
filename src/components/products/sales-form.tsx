@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, Autocomplete, CircularProgress, } from '@mui/material';
-import { createSelledProduct, updateProduct } from '@/src/lib/actions';
+import { createSelledProduct, updateSelledProduct } from '@/src/lib/selledProductActions';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import { setProductState } from "@/src/store/productSlice";
@@ -119,7 +119,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   const handleUpdate = async() => {
     setLoading(true);
 
-    const response = await updateProduct(form);
+    const response = await updateSelledProduct(form);
     if(response?.errors)  {
       console.log("Response", response);
       setLoading(false);

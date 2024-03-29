@@ -7,6 +7,8 @@ interface FetchProducts {
   page?: number;
   perPage?: number;
   query?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProducts) {
@@ -54,18 +56,26 @@ export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProduc
   }
 }
 
-export async function fetchSelledProducts({query, page = 1, perPage = 5 }: FetchProducts) {
+export async function fetchSelledProducts({query, page = 1, perPage = 5, startDate, endDate}: FetchProducts) {
   noStore();
 
-  // Add month & year filter
   const skip = (page - 1) * perPage;
   const take = perPage;
+
+  // Passar os parametros comuns na duas request pra uma const
+
+  console.log("Data inicio", startDate);
+  console.log("Data final", endDate);
 
   try {
     const countProducts = await prisma.selledProducts.count({
       where: {
         product: {
-          name: query || undefined
+          name: query || undefined,
+          createdAt: startDate && endDate ? {
+            gte: startDate ? new Date(startDate) : undefined,
+            lte: endDate ? new Date(endDate) : undefined,
+          } : undefined
         }
       }
     }); // Talvez passar pra outro metodo, evitando toda request
@@ -75,7 +85,11 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5 }: Fetch
       take: take,
       where: {
         product: {
-          name: query || undefined
+          name: query || undefined,
+          createdAt: startDate && endDate ? {
+            gte: startDate ? new Date(startDate) : undefined,
+            lte: endDate ? new Date(endDate) : undefined,
+          } : undefined
         }
       },
       include: {
@@ -110,6 +124,7 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5 }: Fetch
       }
     ))
     return {
+      totalValue: products.reduce((a, b) =>  a +  (b.custom_sold_value || b.product?.sold_value), 0),
       products: formatedProducts,
       count: countProducts
     }; // Tipar bem o retorno

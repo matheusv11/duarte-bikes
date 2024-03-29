@@ -1,19 +1,42 @@
 'use client'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress, TableFooter, TableCell, TableRow } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { FaPen, FaTrash } from "react-icons/fa";
 import { setProductState } from "@/src/store/productSlice";
 import { useAppDispatch, useAppSelector } from "@/src/store";
-import { deleteProduct } from "@/src/lib/actions";
+// import { deleteProduct } from "@/src/lib/selledProductActions";
 import { Product } from "@/src/types/products";
+import CustomToolbar from "@/src/components/products/custom-toolbar";
+import { largeSelledProductsData } from '@/src/lib/mock'
+import page from "@/src/app/page";
 
+const style = {
+  footerCell: {
+    backgroundColor: "grey",
+    borderBottom: "none",
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bolder",
+    position: 'sticky',
+    bottom: 0,
+    zIndex: 100,
+  },
+ 
+}
 
+const style2= {
+    position: "sticky",
+    left: 0,
+    background: "white",
+    zIndex: 101
+}
 interface ITable {
   products: Product[]
   loading: boolean;
+  totalValue: number;
   currentPage: number;
   totalCount: number;
   rows: number;
@@ -21,20 +44,10 @@ interface ITable {
   toggleDrawer: (open: boolean) => void;
 }
 
-const CustomToolbar = ({toggleDrawer}: any) => {
-  return(
-     <>
-      <Button sx={{ml: 2}} variant="contained" onClick={() => toggleDrawer(true)}>
-        Criar
-      </Button>
-     </>
-   );
-  }
-
-export default function Table({loading, products, currentPage, totalCount, rows, refetch, toggleDrawer }: ITable) {
+export default function Table({loading, products, currentPage, totalValue, totalCount, rows, refetch, toggleDrawer }: ITable) {
   const searchParams = useSearchParams();
   const [deleProduct, setDeleProduct] = useState<any>(null);
-  
+
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
 
@@ -80,7 +93,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
   }
 
   const delProduct = async () => {
-    await deleteProduct(deleProduct.id);
+    // await deleteProduct(deleProduct.id);
     setDeleProduct(null);
     refetch();
   }
@@ -98,7 +111,24 @@ export default function Table({loading, products, currentPage, totalCount, rows,
       label: "Produto",
       options: {
         filter: true,
-        sort: true,
+        // setCellProps: () => ({
+        //   style: {
+        //     whiteSpace: "nowrap",
+        //     position: "sticky",
+        //     left: "0",
+        //     background: "white",
+        //     zIndex: 100
+        //   }
+        // }),
+        // setCellHeaderProps: () => ({
+        //   style: {
+        //     whiteSpace: "nowrap",
+        //     position: "sticky",
+        //     left: 0,
+        //     background: "white",
+        //     zIndex: 101
+        //   }
+        // })
       }
     },
     {
@@ -141,46 +171,46 @@ export default function Table({loading, products, currentPage, totalCount, rows,
         sort: true,
       }
     },
-    {
-      name: "edit",
-      label: "Editar",
-      options: {
-        filter: true,
-        sort: true,
-        setCellProps: () => ({ align: 'center' }),
-        customBodyRender: (val, meta, updateValue) => (
-          <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={() => dispatch(setProductState(product === val ? null : val as any))}
-          edge="start"
-          // sx={{ mr: 2, ...(open && { display: 'none' }) }}
-        >
-          <FaPen />
-        </IconButton>
-        )
-      },
-    },
-    {
-      name: "delete",
-      label: "Excluir",
-      options: {
-        filter: true,
-        sort: true,
-        setCellProps: () => ({ align: 'center' }),
-        customBodyRender: (val, meta, updateValue) => (
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => setDeleProduct(val)}
-            // edge="start"
-          // sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <FaTrash />
-          </IconButton>
-        )
-      },
-    },
+    // {
+    //   name: "edit",
+    //   label: "Editar",
+    //   options: {
+    //     filter: true,
+    //     sort: true,
+    //     setCellProps: () => ({ align: 'center' }),
+    //     customBodyRender: (val, meta, updateValue) => (
+    //       <IconButton
+    //       color="inherit"
+    //       aria-label="open drawer"
+    //       onClick={() => dispatch(setProductState(product === val ? null : val as any))}
+    //       edge="start"
+    //       // sx={{ mr: 2, ...(open && { display: 'none' }) }}
+    //     >
+    //       <FaPen />
+    //     </IconButton>
+    //     )
+    //   },
+    // },
+    // {
+    //   name: "delete",
+    //   label: "Excluir",
+    //   options: {
+    //     filter: true,
+    //     sort: true,
+    //     setCellProps: () => ({ align: 'center' }),
+    //     customBodyRender: (val, meta, updateValue) => (
+    //       <IconButton
+    //         color="inherit"
+    //         aria-label="open drawer"
+    //         onClick={() => setDeleProduct(val)}
+    //         // edge="start"
+    //       // sx={{ mr: 2, ...(open && { display: 'none' }) }}
+    //       >
+    //         <FaTrash />
+    //       </IconButton>
+    //     )
+    //   },
+    // },
   ];
 
   const options: MUIDataTableOptions = { // Maybe memoized component
@@ -196,7 +226,56 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     serverSide: true,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
-    customToolbar: () =>  CustomToolbar({ toggleDrawer }),
+    tableBodyHeight:  '75vh', // Mudar
+    customToolbar: () =>  <CustomToolbar  toggleDrawer={ toggleDrawer }/>,
+    customTableBodyFooterRender: (opts) => {
+      
+      // console.log("OPTS", opts);
+      // const startIndex = page * rowsPerPage;
+      // const endIndex = (page + 1) * rowsPerPage;
+      // let sumEnglish = opts.data
+      //   .slice(startIndex, endIndex)
+      //   .reduce((accu, item) => {
+      //     return accu + item.data[1];
+      //   }, 0);
+      // let sumMaths = opts.data
+      //   ?.slice(startIndex, endIndex)
+      //   ?.reduce((accu, item) => {
+      //     return accu + item.data[2];
+      //   }, 0);
+      // let sumScience = opts.data
+      //   .slice(startIndex, endIndex)
+      //   .reduce((accu, item) => {
+      //     return accu + item.data[3];
+      //   }, 0);
+      return (
+        <>
+          <TableFooter  sx={style.footerCell}>
+            <TableRow>
+              {opts.columns.map((col, index) => {
+                if (col.display === "true") {
+                  if (col.name === "product_name") {
+                    return (
+                      <TableCell sx={style.footerCell} key={index} >
+                        Total
+                      </TableCell>
+                    );
+                  } else if (col.name === "sold_value") {
+                    return (
+                      <TableCell sx={style.footerCell} key={index} >
+                        {totalValue}
+                      </TableCell>
+                    );
+                  } else {
+                    return  <TableCell key={index} sx={style.footerCell}  />;
+                  }
+                }
+              })}
+            </TableRow>
+          </TableFooter>
+        </>
+      );
+    },
     textLabels: {
       body: {
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'
@@ -210,11 +289,14 @@ export default function Table({loading, products, currentPage, totalCount, rows,
 
   const handleClose = () => setDeleProduct(null);
 
+
+
   return (
     <>
       <MUIDataTable
         title={"Vendas"}
         data={products}
+        // data={largeSelledProductsData}
         columns={columns}
         options={options}
       />

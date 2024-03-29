@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/material';
-import { createProduct, updateProduct } from '@/src/lib/actions';
+import { createProduct, updateProduct } from '@/src/lib/productActions';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import { setProductState } from "@/src/store/productSlice";
