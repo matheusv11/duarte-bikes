@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/src/store";
 import { deleteProduct } from "@/src/lib/productActions";
 import { Product } from "@/src/types/products";
 import useTable from "@/src/lib/useTable";
+import { valueCurrencyMask } from "@/src/lib/utils";
 
 interface ITable {
   products: Product[]
@@ -65,14 +66,14 @@ export default function Table({loading, products, currentPage, totalCount, rows,
       name: "buyed_value",
       label: "Valor comprado",
       options: {
-        customBodyRender: (val) => `R$ ${val}`
+        customBodyRender: (val) => `${valueCurrencyMask(val.toString())}`
       }
     },
     {
       name: "sold_value",
       label: "Valor vendido",
       options: {
-        customBodyRender: (val) => `R$ ${val}`
+        customBodyRender: (val) => `${valueCurrencyMask(val.toString())}`
       }
     },
     {

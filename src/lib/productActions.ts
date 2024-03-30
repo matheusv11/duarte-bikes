@@ -14,9 +14,12 @@ const FormSchema = z.object({
   id: z.string(),
   name: z.string().min(1),
   description: z.string(),
-  buyed_value: z.coerce.number().gt(0, { message: message }),
-  sold_value: z.coerce.number().gt(0, { message: message }),
-  quantity: z.coerce.number().gt(0, { message: message }),
+  buyed_value: z.string(),
+  sold_value: z.string(),
+  quantity: z.string(),
+  // buyed_value: z.coerce.number().gt(0, { message: message }),
+  // sold_value: z.coerce.number().gt(0, { message: message }),
+  // quantity: z.coerce.number().gt(0, { message: message }),
   // customerId: z.string({
   //   invalid_type_error: 'Please select a customer.',
   // }),  
@@ -42,13 +45,14 @@ export async function createProduct(data: any) { // Tipar
  
   const { buyed_value,description, name, quantity, sold_value } = validatedFields.data;
  
+  // Number(buyed_value.replace("R$ ", "").replace(/[^\w\s]/gi, '')),
   try {
     await prisma.products.create({ // Melhorar inserção
       data: {
         name: name, 
-        buyed_value: buyed_value,
-        quantity: quantity,
-        sold_value: sold_value,
+        buyed_value: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        quantity: Number(quantity),
+        sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         description: description
   
       },
@@ -80,9 +84,9 @@ export async function updateProduct(data: any) { // Tipar
     await prisma.products.update({
       data: {
         name: name, 
-        buyed_value: buyed_value,
-        quantity: quantity,
-        sold_value: sold_value,
+        buyed_value: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        quantity: Number(quantity),
+        sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         description: description
   
       },

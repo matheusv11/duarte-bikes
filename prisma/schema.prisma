@@ -81,8 +81,8 @@ model Products {
   id            String    @default(cuid()) @id
   name          String
   description   String?
-  buyed_value   Float
-  sold_value    Float
+  buyed_value   Float     // Value in cents
+  sold_value    Float     // Value in cents
   quantity      Int
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")

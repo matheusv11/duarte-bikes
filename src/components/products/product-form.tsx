@@ -6,14 +6,15 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import { setProductState } from "@/src/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
+import {inputOnlyDigits, inputCurrencyMask } from '@/src/lib/utils';
 
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
   name: "",
   description: "",
-  buyed_value: 0,
-  sold_value: 0,
-  quantity: 0,
+  buyed_value: "",
+  sold_value: "",
+  quantity: "",
 }
 
 type FormError = {
@@ -35,7 +36,6 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   const product = useAppSelector((state) => state.product.product);
 
   const [form, setForm] = useState(initialForm);
-  const [expanded, setExpanded] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormError>({});// Tipar
 
@@ -57,6 +57,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setLoading(true);
 
     const response = await createProduct(form);
+
     if(response?.errors)  {
       console.log("Response", response);
       setLoading(false);
@@ -103,11 +104,18 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   useEffect(() => {
     if(product) {
       setForm(product as any)
-      setExpanded(true);
-    } else {
-      setExpanded(false)
     }
   }, [product]);
+
+  const handleCurrency = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const mask = inputCurrencyMask(e);
+    handleForm(mask);
+  }
+
+  const handleOnlyDigits = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const digits = inputOnlyDigits(e);
+    handleForm(digits);
+  }
 
   return (
     <Drawer
@@ -157,39 +165,39 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
           <TextField
             fullWidth
             required
-            type="number"
+            type="text"
             id="buyed_value"
             name="buyed_value"
             label="Valor comprado"
             placeholder="Valor comprado"
             value={form.buyed_value}
-            onChange={handleForm}
+            onChange={handleCurrency}
             error={!!errors.buyed_value}
             helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
           />
           <TextField
             fullWidth
             required
-            type="number"
+            type="text"
             id="sold_value"
             name="sold_value"
             label="Valor vendido"
             placeholder="Valor vendido"
             value={form.sold_value}
-            onChange={handleForm}
+            onChange={handleCurrency}
             error={!!errors.sold_value}
             helperText={errors.sold_value && errors.sold_value.map(e => e)}
           />
           <TextField
             fullWidth
             required
-            type="number"
+            type="text"
             id="quantity"
             name="quantity"
             label="Quantidade"
             placeholder="Quantidade"
             value={form.quantity}
-            onChange={handleForm}
+            onChange={handleOnlyDigits}
             error={!!errors.quantity}
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />
