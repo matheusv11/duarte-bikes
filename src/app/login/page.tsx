@@ -41,6 +41,7 @@ export default function Login() {
   // Solução sem grid, mas não é tão responsiva
   // Setar um max e min width, como no final-example
   return (
+    <Box sx={{ display:'flex', height: '100%' }}> 
     <Box sx={{margin: 'auto', width: 450, p: 1}} component="form" onSubmit={handleLogin}>
       <Paper elevation={6} sx={{
         display: 'flex',
@@ -101,6 +102,7 @@ export default function Login() {
           
         </Box>
       </Paper>
+    </Box>
     </Box>
 
   );

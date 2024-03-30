@@ -15,9 +15,6 @@ export default function Home() {
   return (
 
     <>
-    {/* Remover depois appbar */}
-    <AppBar open={open} handleDrawer={handleDrawer}/>
-    
     <Main open={true}>
       <Box sx={{display:"flex", flexDirection: 'column', background: 'pink', gap: 2}}>
         <Image

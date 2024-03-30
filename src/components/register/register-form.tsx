@@ -62,146 +62,149 @@ export default function RegisterForm() {
     }
   };
   return (
-    <Box sx={{margin: 'auto', width: 450, p: 1}} component="form" onSubmit={handleRegister}>
-      <Paper elevation={6} sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center', 
-        p: 2,
-        gap: 2,
-      }}>
-        <Link href="/">
-          <Image
-            src={logo}
-            height={100}
-            alt="duarte logo"
+    <Box sx={{ display:'flex', height: '100%' }}> 
+
+      <Box sx={{margin: 'auto', width: 450, p: 1}} component="form" onSubmit={handleRegister}>
+        <Paper elevation={6} sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center', 
+          p: 2,
+          gap: 2,
+        }}>
+          <Link href="/">
+            <Image
+              src={logo}
+              height={100}
+              alt="duarte logo"
+            />
+          </Link>
+
+          <TextField 
+            required
+            type='text'
+            fullWidth
+            label="Nome completo"
+            variant="outlined"
+            onChange={(e) => handleUserData('name', e.target.value)}
+            value={userData.name}
           />
-        </Link>
 
-        <TextField 
-          required
-          type='text'
-          fullWidth
-          label="Nome completo"
-          variant="outlined"
-          onChange={(e) => handleUserData('name', e.target.value)}
-          value={userData.name}
-        />
+          <TextField 
+            required
+            type='tel'
+            fullWidth
+            label="CPF"
+            variant="outlined"
+            onChange={(e) => handleUserData('cpf', e.target.value)}
+            value={userData.cpf}
+          />
 
-        <TextField 
-          required
-          type='tel'
-          fullWidth
-          label="CPF"
-          variant="outlined"
-          onChange={(e) => handleUserData('cpf', e.target.value)}
-          value={userData.cpf}
-        />
+          <TextField 
+            required
+            type='tel'
+            fullWidth
+            label="Endereço"
+            variant="outlined"
+            onChange={(e) => handleUserData('address', e.target.value)}
+            value={userData.address}
+          />
 
-        <TextField 
-          required
-          type='tel'
-          fullWidth
-          label="Endereço"
-          variant="outlined"
-          onChange={(e) => handleUserData('address', e.target.value)}
-          value={userData.address}
-        />
+          <TextField 
+            required
+            type='tel'
+            fullWidth
+            label="Celular"
+            variant="outlined"
+            onChange={(e) => handleUserData('cellphone', e.target.value)}
+            value={userData.cellphone}
+          />
 
-        <TextField 
-          required
-          type='tel'
-          fullWidth
-          label="Celular"
-          variant="outlined"
-          onChange={(e) => handleUserData('cellphone', e.target.value)}
-          value={userData.cellphone}
-        />
-
-        <IconButton
-          sx={{
-            height: 129,
-            minWidth: 129,
-            borderRadius: '10px',
-            border: '1px solid black',
-            padding: 0,
-          }}
-          color="primary"
-          aria-label="upload picture"
-          component="label"
-          onMouseEnter={handleOpacityAvatar}
-          onMouseLeave={handleOpacityAvatar}
-            >
-              <input
-                name="file"
-                hidden
-                accept="image/*"
-                type="file"
-                onChange={handleUploadFile}
-              />
-              <Box>
-                <Avatar
-                  sx={{
-                    height: 127,
-                    minWidth: 127,
-                    borderRadius: '10px',
-                    opacity: opacityAvatar,
-                  }}
-                  src={selectedImage ? URL.createObjectURL(selectedImage) : ""}
+          <IconButton
+            sx={{
+              height: 129,
+              minWidth: 129,
+              borderRadius: '10px',
+              border: '1px solid black',
+              padding: 0,
+            }}
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            onMouseEnter={handleOpacityAvatar}
+            onMouseLeave={handleOpacityAvatar}
+              >
+                <input
+                  name="file"
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  onChange={handleUploadFile}
                 />
+                <Box>
+                  <Avatar
+                    sx={{
+                      height: 127,
+                      minWidth: 127,
+                      borderRadius: '10px',
+                      opacity: opacityAvatar,
+                    }}
+                    src={selectedImage ? URL.createObjectURL(selectedImage) : ""}
+                  />
 
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    opacity: +(opacityAvatar !== 1),
-                  }}
-                >
-                  <UploadIcon color="primary" fontSize="large" />
-                  <Typography color="primary" variant="body2">
-                    Adicionar
-                  </Typography>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      display: 'flex',
+                      alignItems: 'center',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      opacity: +(opacityAvatar !== 1),
+                    }}
+                  >
+                    <UploadIcon color="primary" fontSize="large" />
+                    <Typography color="primary" variant="body2">
+                      Adicionar
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-        </IconButton>
+          </IconButton>
 
-        <TextField
-          required
-          type={showPassword ? "text" : "password"} 
-          fullWidth
-          label="Senha"
-          variant="outlined"
-          onChange={(e) => handleUserData('password', e.target.value)}
-          value={userData.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
+          <TextField
+            required
+            type={showPassword ? "text" : "password"} 
+            fullWidth
+            label="Senha"
+            variant="outlined"
+            onChange={(e) => handleUserData('password', e.target.value)}
+            value={userData.password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
 
-        <Button variant="contained" type="submit" disabled={loading  || !hasFilledAllFields }>Cadastrar</Button>
-        <Box display="flex">
-          {error && (
-            <>
-              <ErrorOutlineIcon color="error" />
-              <Typography color="error">{error}</Typography>
-            </>
-          )}
-        </Box>
-      </Paper>
+          <Button variant="contained" type="submit" disabled={loading  || !hasFilledAllFields }>Cadastrar</Button>
+          <Box display="flex">
+            {error && (
+              <>
+                <ErrorOutlineIcon color="error" />
+                <Typography color="error">{error}</Typography>
+              </>
+            )}
+          </Box>
+        </Paper>
+      </Box>
     </Box>
   );
 }

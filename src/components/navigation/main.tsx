@@ -62,7 +62,6 @@ export default function MainComponent({children, open }: AppBarComponent) {
 
   return (
     <Main open={open}>
-      <DrawerHeader/>
       {children}
     </Main>
   );

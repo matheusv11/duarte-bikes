@@ -14,10 +14,6 @@ interface FetchProducts {
 export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProducts) {
   noStore();
 
-  console.log("Query", query);
-  console.log("Page", page);
-  console.log("Per", perPage);
-
   const skip = (page - 1) * perPage;
   const take = perPage;
 
@@ -33,6 +29,9 @@ export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProduc
       take: take,
       where: {
         name: query || undefined
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     });
 

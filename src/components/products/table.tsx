@@ -1,14 +1,13 @@
 'use client'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
-import { usePathname, useSearchParams, useRouter} from 'next/navigation';
-import { useEffect, useMemo, useState } from "react";
-import { useDebouncedCallback } from 'use-debounce';
+import { useState } from "react";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { setProductState } from "@/src/store/productSlice";
 import { useAppDispatch, useAppSelector } from "@/src/store";
 import { deleteProduct } from "@/src/lib/productActions";
 import { Product } from "@/src/types/products";
+import useTable from "@/src/lib/useTable";
 
 interface ITable {
   products: Product[]
@@ -35,52 +34,11 @@ const CustomToolbar = ({dispatch, toggleDrawer}: any) => {
   }
 
 export default function Table({loading, products, currentPage, totalCount, rows, refetch, toggleDrawer }: ITable) {
-  const searchParams = useSearchParams();
+  const { closeSearch, changePage, handleSearch, changeRows } = useTable();
   const [deleProduct, setDeleProduct] = useState<any>(null);
   
   const dispatch = useAppDispatch();
   const product = useAppSelector((state) => state.product.product);
-
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const createPageURL = (pageNumber: number) => {
-    const number = pageNumber + 1;
-    const params = new URLSearchParams(searchParams);
-
-    params.set('page', number.toString());
-    
-    replace(`${pathname}?${params.toString()}`);
-  };
-
-  const changeRows = (rows: number) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.set('page', '1');
-    params.set('rows', rows.toString());
-    
-    replace(`${pathname}?${params.toString()}`);
-  }
-  
-  const handleSearch = useDebouncedCallback((search) => {
-
-    const params = new URLSearchParams(searchParams);
-
-    params.set('page', '1');
-
-    if (search) {
-      params.set('query', search);
-    } else {
-      params.delete('query');
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
-  const closeSearch = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('query');
-    replace(`${pathname}?${params.toString()}`);
-  }
 
   const delProduct = async () => {
     await deleteProduct(deleProduct.id);
@@ -88,69 +46,46 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     refetch();
   }
   const columns: MUIDataTableColumnDef[] = [ // Tipar // Alinhar coluna com oq retornar do banco
-    // {
-    //   name: "id",
-    //   label: "ID",
-    //   options: {
-    //   filter: true,
-    //   sort: true,
-    //   }
-    // },
+    {
+      name: "id",
+      label: "ID",
+      options: {
+        display: false,
+      }
+    },
     {
       name: "name",
       label: "Produto",
-      options: {
-        filter: true,
-        sort: true,
-      }
     },
     {
       name: "description",
       label: "Descrição",
-      options: {
-        filter: true,
-        sort: true,
-      }
     },
     {
       name: "buyed_value",
       label: "Valor comprado",
       options: {
-        filter: true,
-        sort: true,
+        customBodyRender: (val) => `R$ ${val}`
       }
     },
     {
       name: "sold_value",
       label: "Valor vendido",
       options: {
-        filter: true,
-        sort: true,
+        customBodyRender: (val) => `R$ ${val}`
       }
     },
     {
       name: "quantity",
       label: "Quantidade",
-      options: {
-        filter: true,
-        sort: true,
-      }
     },
     {
       name: "createdAt",
       label: "Criado em",
-      options: {
-        filter: true,
-        sort: true,
-      }
     },
     {
       name: "updatedAt",
       label: "Editado em",
-      options: {
-        filter: true,
-        sort: true,
-      }
     },
     {
       name: "edit",
@@ -195,12 +130,16 @@ export default function Table({loading, products, currentPage, totalCount, rows,
   ];
 
   const options: MUIDataTableOptions = { // Maybe memoized component
-    filterType: 'checkbox',
+    // filterType: 'dropdown',
+    filter: false,
+    sort: false,
     selectableRows: 'none',
     rowsPerPage: rows,
     responsive: 'standard',
-    rowsPerPageOptions: [5, 10, 20],
-    onChangePage: createPageURL,
+    // tableBodyHeight: '75vh',
+    tableBodyMaxHeight: '75vh',
+    rowsPerPageOptions: [5, 10, 20, 50, 100],
+    onChangePage: changePage,
     onChangeRowsPerPage: changeRows,
     count: totalCount,
     page: currentPage - 1,
@@ -213,10 +152,6 @@ export default function Table({loading, products, currentPage, totalCount, rows,
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'
       }
     }
-    // onTableChange: () => {
-    //   console.log("Mudança")
-    // },
-    // customSearchRender: debounceSearchRender(500),
   };
 
   const handleClose = () => setDeleProduct(null);
