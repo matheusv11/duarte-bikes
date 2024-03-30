@@ -9,8 +9,9 @@
 
 .main {
   /* padding: 6rem; */
-  display: flex;
-  min-height: 100vh;
+  /* display: flex; */
+  height: 100vh;
+  /* min-height: 100vh; */
 }
 
 

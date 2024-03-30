@@ -33,7 +33,7 @@ const AppBar = styled(MuiAppBar, {
 export default function AppBarComponent({ open, handleDrawer }: AppBarComponent) {
 
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar position="sticky" open={open}>
       <Toolbar>
         <IconButton
           color="inherit"
