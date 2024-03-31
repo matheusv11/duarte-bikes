@@ -8,3 +8,22 @@ export type Product = {
   createdAt: Date | string;
   updatedAt: Date | string;
 }
+
+export type TGetProducts = {
+  query?: string;
+  currentPage?: number;
+  rows?: number
+}
+
+export interface IProductState {
+  products: Product[] | [];
+  editProduct: Product | null;
+  productToDelete: {
+    id: string;
+    name: string;
+  } | null;
+  openDrawer: boolean;
+  loading: boolean;
+  totalCount: number;
+  errors: any; // Tipar
+}

@@ -1,25 +1,11 @@
 import {createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Product } from "@/src/types/products"; // Mudar nome
+import { Product, TGetProducts, IProductState } from "@/src/types/products"; // Mudar nome
 import { fetchProducts } from '@/src/lib/data';
-
-interface IProductState {
-  products: Product[] | null;
-  editProduct: Product | null
-  openDrawer: boolean;
-  loading: boolean;
-  totalCount: number;
-  errors: any; // Tipar
-}
-
-interface IFetchProducts{ 
-  query: string;
-  currentPage: number;
-  rows: number;
-}
 
 const initialState: IProductState = {
   products: [],
+  productToDelete: null,
   loading: false,
   editProduct: null,
   openDrawer: false,
@@ -27,11 +13,10 @@ const initialState: IProductState = {
   errors: null
 };
 
-
 export const getProducts = createAsyncThunk(
   'products/fetch',
-  async (params, {rejectWithValue}) => {
-    const { query, currentPage, rows }= params as unknown as IFetchProducts;
+  async (params: TGetProducts = {}, {rejectWithValue}) => {
+    const { query, currentPage, rows }= params;
     
     try{
       const res = await fetchProducts({ query: query, page: currentPage, perPage: rows });
@@ -55,6 +40,9 @@ export const productSlice = createSlice({
     setProductState: (state, action: PayloadAction<Product>) => {
       state.editProduct = action.payload;
     },
+    setProductToDelete: (state, action: PayloadAction<IProductState['productToDelete']>) => {
+      state.productToDelete = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getProducts.pending, (state) => {
@@ -74,5 +62,5 @@ export const productSlice = createSlice({
 
 });
 
-export const { setProductState, handleDrawer } = productSlice.actions;
+export const { setProductState, handleDrawer, setProductToDelete } = productSlice.actions;
 export const productReducer = productSlice.reducer;

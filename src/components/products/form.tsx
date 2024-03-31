@@ -25,12 +25,6 @@ type FormError = {
   quantity?: string[] | undefined;
 }
 
-interface IProductForm {
-  open: boolean;
-  refetch: () => void;
-  toggleDrawer: (open: boolean) => void;
-}
-
 export default function ProductForm() {
   const dispatch = useAppDispatch();
   const {openDrawer, editProduct} = useAppSelector((state) => state.product);

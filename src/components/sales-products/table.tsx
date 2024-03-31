@@ -9,7 +9,7 @@ import { setProductState } from "@/src/store/productSlice";
 import { useAppDispatch, useAppSelector } from "@/src/store";
 // import { deleteProduct } from "@/src/lib/selledProductActions";
 import { Product } from "@/src/types/products";
-import CustomToolbar from "@/src/components/products/custom-toolbar";
+import CustomToolbar from "./custom-toolbar";
 import { largeSelledProductsData } from '@/src/lib/mock'
 import page from "@/src/app/page";
 
