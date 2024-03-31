@@ -15,8 +15,30 @@ export type TGetProducts = {
   rows?: number
 }
 
+export type TGetSaleProducts = {
+  query?: string;
+  currentPage?: number;
+  rows?: number
+  start?: string;
+  end?: string
+}
+
 export interface IProductState {
   products: Product[] | [];
+  productToEdit: Product | null;
+  productToDelete: {
+    id: string;
+    name: string;
+  } | null;
+  openDrawer: boolean;
+  loading: boolean;
+  totalCount: number;
+  errors: any; // Tipar
+}
+
+export interface ISaleProductState {
+  products: Product[] | [];
+  totalValue: string;
   productToEdit: Product | null;
   productToDelete: {
     id: string;

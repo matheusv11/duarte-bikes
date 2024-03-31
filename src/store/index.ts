@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
 import { persistReducer } from "redux-persist";
 import { productReducer } from "@/src/store/productSlice";
+import { saleProductReducer } from "@/src/store/saleProductSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 const createNoopStorage = () => {
@@ -18,21 +19,23 @@ const createNoopStorage = () => {
   };
 };
 
-const storage =
-  typeof window !== "undefined"
-    ? createWebStorage("local")
-    : createNoopStorage();
+// const storage =
+//   typeof window !== "undefined"
+//     ? createWebStorage("local")
+//     : createNoopStorage();
 
-const authPersistConfig = {
-  key: "product",
-  storage: storage,
-  whitelist: ["productState"],
-};
+// const authPersistConfig = {
+//   key: "product",
+//   storage: storage,
+//   whitelist: ["productState"],
+// };
 
-const persistedReducer = persistReducer(authPersistConfig, productReducer);
+// const persistedReducer = persistReducer(authPersistConfig, productReducer);
+// const persistedSaleReducer = persistReducer(authPersistConfig, saleProductReducer);
 
-const rootReducer = combineReducers({
-  product: persistedReducer,
+const rootReducer = combineReducers({ // Don't need to persist reduce now
+  product: productReducer,
+  saleProduct: saleProductReducer
 });
 
 export const store = configureStore({

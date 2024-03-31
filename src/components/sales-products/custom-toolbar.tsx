@@ -6,13 +6,17 @@ import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { format } from 'date-fns';
+import {getSelledProducts,handleDrawer } from '@/src/store/saleProductSlice'
+import { useAppSelector, useAppDispatch } from "@/src/store";
 
-export default function CustomToolbar ({toggleDrawer}: any) {
+export default function CustomToolbar () {
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const createDate = (date: DateRange<Date>) => {
+  const createDate = (date: DateRange<Date>) => { // Passar pro useTable
+    
     const params = new URLSearchParams(searchParams);
 
     if(date.every(v => v)) {
@@ -61,7 +65,7 @@ export default function CustomToolbar ({toggleDrawer}: any) {
         name="allowedRange"
         onChange={createDate}
       />
-      <Button sx={{ml: 2}} variant="contained" onClick={() => toggleDrawer(true)}>
+      <Button sx={{ml: 2}} variant="contained" onClick={() => dispatch(handleDrawer(true))}>
         Criar
       </Button>
      </>

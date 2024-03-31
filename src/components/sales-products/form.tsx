@@ -1,15 +1,15 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, Autocomplete, CircularProgress, } from '@mui/material';
-import { createSelledProduct, updateSelledProduct } from '@/src/lib/selledProductActions';
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
+import { createSelledProduct } from '@/src/lib/selledProductActions';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
-import { setProductState } from "@/src/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
 import { Product } from '@/src/types/products';
 import { fetchProducts } from '@/src/lib/data';
 import { useDebouncedCallback } from 'use-debounce';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import {getSelledProducts,handleDrawer } from '@/src/store/saleProductSlice'
 
 type FormError = {
   name?: string[] | undefined;
@@ -18,26 +18,6 @@ type FormError = {
   sold_value?: string[] | undefined;
   quantity?: string[] | undefined;
 }
-
-interface IProductForm {
-  open: boolean;
-  refetch: () => void;
-  toggleDrawer: (open: boolean) => void;
-}
-
-const top100Films = [
-  { label: 'The Shawshank Redemption', year: 1994 },
-  { label: 'The Godfather', year: 1972 },
-  { label: 'The Godfather: Part II', year: 1974 },
-  { label: 'The Dark Knight', year: 2008 },
-  { label: '12 Angry Men', year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: 'Pulp Fiction', year: 1994 },
-  {
-    label: 'The Lord of the Rings: The Return of the King',
-    year: 2003,
-  }
-]
 
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
@@ -50,11 +30,11 @@ const initialForm = { // Tipar
 }
 
 
-export default function ProductForm({open, refetch, toggleDrawer }: IProductForm) {
+export default function ProductForm() {
   const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.editProduct); // Tá reutilizando o mesmo state do redux, usar outro
   const [products, setProducts] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const { openDrawer } = useAppSelector((state) => state.saleProduct);
 
   const options = useMemo(() => products.map(p => ({ id: p.id, label: p.name})), [products])
 
@@ -87,14 +67,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
 
 
 
-  const handleOpen = useMemo(() => (open || !!product), [open, product]);
-  const handleDrawer = () => {
-    if(product) {
-
-      dispatch(setProductState(null as any));
-    }else {
-      toggleDrawer(false);
-    }
+  const toggleDrawer = () => {
+    dispatch(handleDrawer(false));
   }
 
   const handleCreate = async() => {
@@ -112,47 +86,19 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    handleDrawer();
-    refetch();
+    toggleDrawer();
+    dispatch(getSelledProducts({}));
   }
-
-  const handleUpdate = async() => {
-    setLoading(true);
-
-    const response = await updateSelledProduct(form);
-    if(response?.errors)  {
-      console.log("Response", response);
-      setLoading(false);
-      setErrors(response.errors);
-      // Apenas setar o error de form ao ter conteúdo de form
-      // Caso for coisa de db, retornar numa caixa de mensagem
-      return // Alerta de erro e nas mensagens
-    }
-    setLoading(false);
-    setErrors({});
-    setForm(initialForm);
-    dispatch(setProductState(null as any));
-    refetch()
-  }
-
-  useEffect(() => {
-    console.log("FORM", form)
-  }, [form])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(product) {
-      handleUpdate();
-    } else {
-      handleCreate();
-    }
+    handleCreate();
   }
 
-    const handleSearchChange = useDebouncedCallback((event: any, value: string) => {
-
-      // Chamando duas vezes
-      console.log("Buscou", value);
-      getProducts(value);
+  const handleSearchChange = useDebouncedCallback((event: any, value: string) => {
+    // Chamando duas vezes
+    console.log("Buscou", value);
+    getProducts(value);
   }, 300);
   
   useEffect(() => {
@@ -161,20 +107,11 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    console.log("produto", product)
-
-    if(product) {
-      setForm(product as any);
-      toggleDrawer(true);
-    }
-  }, [product]);
-
   return (
     <Drawer
       anchor='right'
-      open={handleOpen}
-      onClose={handleDrawer}
+      open={openDrawer}
+      onClose={toggleDrawer}
       PaperProps={{
         sx: { width: '100%', maxWidth: 450, p: 2 },
       }}
@@ -186,7 +123,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
             </Typography>
             <IconButton
             size="small"
-            onClick={handleDrawer}
+            onClick={toggleDrawer}
             >
               <CloseIcon />
             </IconButton>
@@ -254,8 +191,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
           />
 
           <Box display="flex" gap={2} justifyContent="center"> 
-            <Button type="submit" variant="contained" disabled={loading}>{product ? "Editar" : "Criar"}</Button>
-            <Button type="button" color='error' variant="contained" disabled={loading} onClick={handleDrawer}>cancelar</Button>
+            <Button type="submit" variant="contained" disabled={loading}>Criar</Button>
+            <Button type="button" color='error' variant="contained" disabled={loading} onClick={toggleDrawer}>cancelar</Button>
           </Box>
 
       </Box>
