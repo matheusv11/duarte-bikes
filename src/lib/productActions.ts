@@ -1,14 +1,6 @@
 'use server';
 import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import prisma from './prisma'
-import { signIn, signOut } from '@/src/auth';
-import { AuthError } from 'next-auth';
-import bcrypt from 'bcrypt';
-import { put } from '@vercel/blob';
-
-const message = "Insira um valor acima de 0.";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -17,15 +9,6 @@ const FormSchema = z.object({
   buyed_value: z.string(),
   sold_value: z.string(),
   quantity: z.string(),
-  // buyed_value: z.coerce.number().gt(0, { message: message }),
-  // sold_value: z.coerce.number().gt(0, { message: message }),
-  // quantity: z.coerce.number().gt(0, { message: message }),
-  // customerId: z.string({
-  //   invalid_type_error: 'Please select a customer.',
-  // }),  
-  // status: z.enum(['pending', 'paid'], {
-  //   invalid_type_error: 'Please select an invoice status.',
-  // }),
   date: z.string(),
 });
 
@@ -45,9 +28,8 @@ export async function createProduct(data: any) { // Tipar
  
   const { buyed_value,description, name, quantity, sold_value } = validatedFields.data;
  
-  // Number(buyed_value.replace("R$ ", "").replace(/[^\w\s]/gi, '')),
   try {
-    await prisma.products.create({ // Melhorar inserção
+    await prisma.products.create({
       data: {
         name: name, 
         buyed_value: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
@@ -63,8 +45,6 @@ export async function createProduct(data: any) { // Tipar
     };
   }
  
-  // revalidatePath('/admin/products');
-  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
 
 export async function updateProduct(data: any) { // Tipar

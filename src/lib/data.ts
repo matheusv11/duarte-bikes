@@ -2,6 +2,7 @@
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from './prisma';
 import { format } from 'date-fns';
+import { valueCurrencyMask, valueOnlyDigits } from './utils';
 
 interface FetchProducts {
   page?: number;
@@ -20,7 +21,10 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
   try {
     const countProducts = await prisma.products.count({
       where: {
-        name: query || undefined
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
       }
     }); // Talvez passar pra outro metodo, evitando toda request
 
@@ -28,7 +32,10 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
       skip: skip,
       take: take,
       where: {
-        name: query || undefined
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
       },
       orderBy: {
         createdAt: 'desc'
@@ -39,7 +46,12 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
     .map(p => (
       {
         ...p,
-        edit: p,
+        edit: {
+          ...p,
+          buyed_value: valueCurrencyMask(p.buyed_value.toString()),
+          sold_value: valueCurrencyMask(p.sold_value.toString()),
+          quantity: valueOnlyDigits(p.quantity.toString())
+        },
         delete: {id: p.id, name: p.name},
         createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
         updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")

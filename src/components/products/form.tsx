@@ -6,7 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import { setProductToEdit, handleDrawer, getProducts } from "@/src/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
-import {inputOnlyDigits, inputCurrencyMask } from '@/src/lib/utils';
+import {valueOnlyDigits, valueCurrencyMask } from '@/src/lib/utils';
 
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
@@ -25,6 +25,7 @@ type FormError = {
   quantity?: string[] | undefined;
 }
 
+// Componentizar esses TextField e form de forma mais inteligente
 export default function ProductForm() {
   const dispatch = useAppDispatch();
   const {openDrawer, productToEdit} = useAppSelector((state) => state.product);
@@ -33,9 +34,7 @@ export default function ProductForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormError>({});// Tipar
 
-  const handleForm = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({...form, [e.target.name]: e.target.value});
-  }
+  const handleForm = (field: keyof typeof form, val: any) => setForm((state) => ({...state, [field]: val}));
 
   const handleOpen = useMemo(() => (openDrawer || !!productToEdit), [openDrawer, productToEdit]);
 
@@ -103,16 +102,6 @@ export default function ProductForm() {
     }
   }, [productToEdit]);
 
-  const handleCurrency = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const mask = inputCurrencyMask(e);
-    handleForm(mask);
-  }
-
-  const handleOnlyDigits = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const digits = inputOnlyDigits(e);
-    handleForm(digits);
-  }
-
   return (
     <Drawer
       anchor='right'
@@ -136,64 +125,64 @@ export default function ProductForm() {
           </Box>
 
           <TextField
-            fullWidth
-            required
             id="name"
             name="name"
             label="Nome"
             placeholder="Nome"
+            fullWidth
+            required
             value={form.name}
-            onChange={handleForm}
+            onChange={(e) => handleForm("name", e.target.value)}
             error={!!errors.name}
             helperText={errors.name && errors.name.map(e => e)}
           />
           <TextField
-            fullWidth
             id="description"
             name="description"
             label="Descrição"
             placeholder="Descrição"
+            fullWidth
             value={form.description}
-            onChange={handleForm}
+            onChange={(e) => handleForm("description", e.target.value)}
             error={!!errors.description}
             helperText={errors.description && errors.description.map(e => e)}
           />
           <TextField
-            fullWidth
-            required
             type="text"
             id="buyed_value"
             name="buyed_value"
             label="Valor comprado"
             placeholder="Valor comprado"
+            fullWidth
+            required
             value={form.buyed_value}
-            onChange={handleCurrency}
+            onChange={(e) => handleForm("buyed_value", valueCurrencyMask(e.target.value))}
             error={!!errors.buyed_value}
             helperText={errors.buyed_value && errors.buyed_value.map(e => e)}
           />
           <TextField
-            fullWidth
-            required
             type="text"
             id="sold_value"
             name="sold_value"
             label="Valor vendido"
             placeholder="Valor vendido"
+            fullWidth
+            required
             value={form.sold_value}
-            onChange={handleCurrency}
+            onChange={(e) => handleForm("sold_value", valueCurrencyMask(e.target.value))}
             error={!!errors.sold_value}
             helperText={errors.sold_value && errors.sold_value.map(e => e)}
           />
           <TextField
-            fullWidth
-            required
             type="text"
             id="quantity"
             name="quantity"
             label="Quantidade"
             placeholder="Quantidade"
+            fullWidth
+            required
             value={form.quantity}
-            onChange={handleOnlyDigits}
+            onChange={(e) => handleForm("quantity", valueOnlyDigits(e.target.value))}
             error={!!errors.quantity}
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />

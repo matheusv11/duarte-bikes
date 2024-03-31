@@ -18,7 +18,7 @@ const CustomEditBodyRender = ({val}: any) => { // Chamar de React.FC
     onClick={() => dispatch(setProductToEdit(productToEdit === val ? null : val as any))}
     edge="start"
   >
-    <FaPen />
+    <FaPen color="orange"/>
   </IconButton>
   )
 }
@@ -33,7 +33,7 @@ const CustomDeleteBodyRender = ({val} : any) => {
       onClick={() => dispatch(setProductToDelete(val))}
       edge="start"
     >
-    <FaTrash />
+    <FaTrash color="red"/>
   </IconButton>
   )
 }
