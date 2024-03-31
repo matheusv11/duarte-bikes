@@ -4,7 +4,7 @@ import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/ma
 import { createProduct, updateProduct } from '@/src/lib/productActions';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
-import { setProductState } from "@/src/store/productSlice";
+import { setProductState, handleDrawer, getProducts } from "@/src/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
 import {inputOnlyDigits, inputCurrencyMask } from '@/src/lib/utils';
 
@@ -31,9 +31,9 @@ interface IProductForm {
   toggleDrawer: (open: boolean) => void;
 }
 
-export default function ProductForm({open, refetch, toggleDrawer }: IProductForm) {
+export default function ProductForm() {
   const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.product);
+  const {openDrawer, editProduct} = useAppSelector((state) => state.product);
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,13 +43,13 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setForm({...form, [e.target.name]: e.target.value});
   }
 
-  const handleOpen = useMemo(() => (open || !!product), [open, product]);
-  const handleDrawer = () => {
-    if(product) {
+  const handleOpen = useMemo(() => (openDrawer || !!editProduct), [openDrawer, editProduct]);
 
+  const toggleDrawer = () => {
+    if(editProduct) {
       dispatch(setProductState(null as any));
     }else {
-      toggleDrawer(false);
+      dispatch(handleDrawer(false));
     }
   }
 
@@ -69,8 +69,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    handleDrawer();
-    refetch();
+    toggleDrawer();
+    dispatch(getProducts({}))
   }
 
   const handleUpdate = async() => {
@@ -89,12 +89,12 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     setErrors({});
     setForm(initialForm);
     dispatch(setProductState(null as any));
-    refetch()
+    dispatch(getProducts({}))
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(product) {
+    if(editProduct) {
       handleUpdate();
     } else {
       handleCreate();
@@ -102,10 +102,10 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
   }
 
   useEffect(() => {
-    if(product) {
-      setForm(product as any)
+    if(editProduct) {
+      setForm(editProduct as any)
     }
-  }, [product]);
+  }, [editProduct]);
 
   const handleCurrency = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const mask = inputCurrencyMask(e);
@@ -121,7 +121,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
     <Drawer
       anchor='right'
       open={handleOpen}
-      onClose={handleDrawer}
+      onClose={toggleDrawer}
       PaperProps={{
         sx: { width: '100%', maxWidth: 450, p: 2 },
       }}
@@ -133,7 +133,7 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
             </Typography>
             <IconButton
             size="small"
-            onClick={handleDrawer}
+            onClick={toggleDrawer}
             >
               <CloseIcon />
             </IconButton>
@@ -202,8 +202,8 @@ export default function ProductForm({open, refetch, toggleDrawer }: IProductForm
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />
           <Box display="flex" gap={2} justifyContent="center"> 
-            <Button type="submit" variant="contained" disabled={loading}>{product ? "Editar" : "Criar"}</Button>
-            <Button type="button" color='error' variant="contained" disabled={loading} onClick={handleDrawer}>cancelar</Button>
+            <Button type="submit" variant="contained" disabled={loading}>{editProduct ? "Editar" : "Criar"}</Button>
+            <Button type="button" color='error' variant="contained" disabled={loading} onClick={toggleDrawer}>cancelar</Button>
           </Box>
 
       </Box>

@@ -49,7 +49,7 @@ export default function Table({loading, products, currentPage, totalValue, total
   const [deleProduct, setDeleProduct] = useState<any>(null);
 
   const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.product);
+  const product = useAppSelector((state) => state.product.editProduct);
 
   const pathname = usePathname();
   const { replace } = useRouter();

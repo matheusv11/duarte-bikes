@@ -1,51 +1,43 @@
 'use client'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, LinearProgress } from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableColumnDef } from "mui-datatables";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { FaPen, FaTrash } from "react-icons/fa";
-import { setProductState } from "@/src/store/productSlice";
-import { useAppDispatch, useAppSelector } from "@/src/store";
+import { setProductState, handleDrawer, getProducts } from "@/src/store/productSlice";
 import { deleteProduct } from "@/src/lib/productActions";
-import { Product } from "@/src/types/products";
+// import { Product } from "@/src/types/products";
+import CustomToolbar from "./custom-toolbar-product";
+
 import useTable from "@/src/lib/useTable";
 import { valueCurrencyMask } from "@/src/lib/utils";
+import { useAppSelector, useAppDispatch } from "@/src/store";
 
-interface ITable {
-  products: Product[]
-  loading: boolean;
-  currentPage: number;
-  totalCount: number;
-  rows: number;
-  refetch: () => void;
-  toggleDrawer: (open: boolean) => void;
-}
+export default function Table() {
+  const dispatch = useAppDispatch();
+  const { errors, loading, products,editProduct, totalCount, openDrawer} = useAppSelector((state) => state.product);
 
-const CustomToolbar = ({dispatch, toggleDrawer}: any) => {
-  const openDrawer = () => {
-    dispatch(setProductState(null as any));
-    toggleDrawer(true);
-  }
-  return(
-     <>
-      <Button sx={{ml: 2}} variant="contained" onClick={openDrawer}>
-        Criar
-      </Button>
-     </>
-   );
-  }
+  const searchParams = useSearchParams();
 
-export default function Table({loading, products, currentPage, totalCount, rows, refetch, toggleDrawer }: ITable) {
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const query = searchParams.get('query') || '';
+  const rows = Number(searchParams.get('rows')) || 5;
+  
+ 
+  useEffect(() => {
+    dispatch(getProducts({ query: query, currentPage: currentPage, rows: rows }))
+  }, [dispatch, searchParams])
+  // searchParams
+
   const { closeSearch, changePage, handleSearch, changeRows } = useTable();
   const [deleProduct, setDeleProduct] = useState<any>(null);
   
-  const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.product);
-
   const delProduct = async () => {
     await deleteProduct(deleProduct.id);
     setDeleProduct(null);
-    refetch();
+    // refetch();
   }
+
   const columns: MUIDataTableColumnDef[] = [ // Tipar // Alinhar coluna com oq retornar do banco
     {
       name: "id",
@@ -99,7 +91,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
           <IconButton
           color="inherit"
           aria-label="open drawer"
-          onClick={() => dispatch(setProductState(product === val ? null : val as any))}
+          onClick={() => dispatch(setProductState(editProduct === val ? null : val as any))}
           edge="start"
           // sx={{ mr: 2, ...(open && { display: 'none' }) }}
         >
@@ -147,7 +139,7 @@ export default function Table({loading, products, currentPage, totalCount, rows,
     serverSide: true,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
-    customToolbar: () =>  CustomToolbar({dispatch, toggleDrawer }),
+    customToolbar: () =>  <CustomToolbar/>,
     textLabels: {
       body: {
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'

@@ -11,7 +11,7 @@ interface FetchProducts {
   endDate?: string;
 }
 
-export async function fetchProducts({query, page = 1, perPage = 5 }: FetchProducts) {
+export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchProducts) {
   noStore();
 
   const skip = (page - 1) * perPage;

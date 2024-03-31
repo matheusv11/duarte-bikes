@@ -52,7 +52,7 @@ const initialForm = { // Tipar
 
 export default function ProductForm({open, refetch, toggleDrawer }: IProductForm) {
   const dispatch = useAppDispatch();
-  const product = useAppSelector((state) => state.product.product); // Tá reutilizando o mesmo state do redux, usar outro
+  const product = useAppSelector((state) => state.product.editProduct); // Tá reutilizando o mesmo state do redux, usar outro
   const [products, setProducts] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
