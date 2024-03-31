@@ -17,7 +17,7 @@ export type TGetProducts = {
 
 export interface IProductState {
   products: Product[] | [];
-  editProduct: Product | null;
+  productToEdit: Product | null;
   productToDelete: {
     id: string;
     name: string;

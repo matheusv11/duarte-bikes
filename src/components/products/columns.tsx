@@ -5,17 +5,17 @@ import { valueCurrencyMask } from "@/src/lib/utils";
 import { FaPen, FaTrash } from "react-icons/fa";
 import { IconButton } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "@/src/store";
-import { setProductState, setProductToDelete } from "@/src/store/productSlice";
+import { setProductToEdit, setProductToDelete } from "@/src/store/productSlice";
 
 const CustomEditBodyRender = ({val}: any) => { // Chamar de React.FC
   const dispatch = useAppDispatch();
-  const { editProduct } = useAppSelector((state) => state.product);
+  const { productToEdit } = useAppSelector((state) => state.product);
 
   return (
     <IconButton
     color="inherit"
     aria-label="open drawer"
-    onClick={() => dispatch(setProductState(editProduct === val ? null : val as any))}
+    onClick={() => dispatch(setProductToEdit(productToEdit === val ? null : val as any))}
     edge="start"
   >
     <FaPen />

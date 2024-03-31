@@ -7,7 +7,7 @@ const initialState: IProductState = {
   products: [],
   productToDelete: null,
   loading: false,
-  editProduct: null,
+  productToEdit: null,
   openDrawer: false,
   totalCount: 0,
   errors: null
@@ -37,8 +37,8 @@ export const productSlice = createSlice({
     handleDrawer: (state, action: PayloadAction<boolean>) => {
       state.openDrawer = action.payload
     },
-    setProductState: (state, action: PayloadAction<Product>) => {
-      state.editProduct = action.payload;
+    setProductToEdit: (state, action: PayloadAction<Product>) => {
+      state.productToEdit = action.payload;
     },
     setProductToDelete: (state, action: PayloadAction<IProductState['productToDelete']>) => {
       state.productToDelete = action.payload;
@@ -62,5 +62,5 @@ export const productSlice = createSlice({
 
 });
 
-export const { setProductState, handleDrawer, setProductToDelete } = productSlice.actions;
+export const { setProductToEdit, handleDrawer, setProductToDelete } = productSlice.actions;
 export const productReducer = productSlice.reducer;

@@ -4,7 +4,7 @@ import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/ma
 import { createProduct, updateProduct } from '@/src/lib/productActions';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
-import { setProductState, handleDrawer, getProducts } from "@/src/store/productSlice";
+import { setProductToEdit, handleDrawer, getProducts } from "@/src/store/productSlice";
 import CloseIcon from '@mui/icons-material/Close';
 import {inputOnlyDigits, inputCurrencyMask } from '@/src/lib/utils';
 
@@ -27,7 +27,7 @@ type FormError = {
 
 export default function ProductForm() {
   const dispatch = useAppDispatch();
-  const {openDrawer, editProduct} = useAppSelector((state) => state.product);
+  const {openDrawer, productToEdit} = useAppSelector((state) => state.product);
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,11 +37,11 @@ export default function ProductForm() {
     setForm({...form, [e.target.name]: e.target.value});
   }
 
-  const handleOpen = useMemo(() => (openDrawer || !!editProduct), [openDrawer, editProduct]);
+  const handleOpen = useMemo(() => (openDrawer || !!productToEdit), [openDrawer, productToEdit]);
 
   const toggleDrawer = () => {
-    if(editProduct) {
-      dispatch(setProductState(null as any));
+    if(productToEdit) {
+      dispatch(setProductToEdit(null as any));
     }else {
       dispatch(handleDrawer(false));
     }
@@ -82,13 +82,13 @@ export default function ProductForm() {
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    dispatch(setProductState(null as any));
+    dispatch(setProductToEdit(null as any));
     dispatch(getProducts({}))
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(editProduct) {
+    if(productToEdit) {
       handleUpdate();
     } else {
       handleCreate();
@@ -96,10 +96,12 @@ export default function ProductForm() {
   }
 
   useEffect(() => {
-    if(editProduct) {
-      setForm(editProduct as any)
+    if(productToEdit) {
+      setForm(productToEdit as any)
+    }else {
+      setForm(initialForm)
     }
-  }, [editProduct]);
+  }, [productToEdit]);
 
   const handleCurrency = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const mask = inputCurrencyMask(e);
@@ -196,7 +198,7 @@ export default function ProductForm() {
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />
           <Box display="flex" gap={2} justifyContent="center"> 
-            <Button type="submit" variant="contained" disabled={loading}>{editProduct ? "Editar" : "Criar"}</Button>
+            <Button type="submit" variant="contained" disabled={loading}>{productToEdit ? "Editar" : "Criar"}</Button>
             <Button type="button" color='error' variant="contained" disabled={loading} onClick={toggleDrawer}>cancelar</Button>
           </Box>
 

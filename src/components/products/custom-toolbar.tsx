@@ -1,14 +1,14 @@
 'use client'
 
 import { Button } from '@mui/material';
-import { setProductState, handleDrawer } from "@/src/store/productSlice";
+import { setProductToEdit, handleDrawer } from "@/src/store/productSlice";
 import { useAppDispatch } from "@/src/store";
 
 export default function CustomToolbar () {
   const dispatch = useAppDispatch();
 
   const openDrawer = () => {
-    dispatch(setProductState(null as any));
+    dispatch(setProductToEdit(null as any));
     dispatch(handleDrawer(true));
   }
 
