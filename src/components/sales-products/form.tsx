@@ -5,11 +5,12 @@ import { createSelledProduct } from '@/src/lib/selledProductActions';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import CloseIcon from '@mui/icons-material/Close';
-import { Product } from '@/src/types/products';
-import { fetchProducts } from '@/src/lib/data';
+import { TSelectedProduct } from '@/src/types/products';
+import { fetchProductsToSale } from '@/src/lib/data';
 import { useDebouncedCallback } from 'use-debounce';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import {getSelledProducts,handleDrawer } from '@/src/store/saleProductSlice'
+import { getSelledProducts, handleDrawer } from '@/src/store/saleProductSlice'
+import {valueOnlyDigits, valueCurrencyMask } from "@/src/lib/utils";
 
 type FormError = {
   name?: string[] | undefined;
@@ -25,38 +26,30 @@ const initialForm = { // Tipar
     label: ''
   },
   date: new Date(),
-  quantity: 0,
-  sold_value: 0,
+  quantity: "",
+  sold_value: "",
 }
 
 
 export default function ProductForm() {
   const dispatch = useAppDispatch();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<TSelectedProduct[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const { openDrawer } = useAppSelector((state) => state.saleProduct);
-
-  const options = useMemo(() => products.map(p => ({ id: p.id, label: p.name})), [products])
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormError>({});// Tipar
 
-  const handleForm = (field: string, val: string) => {
-    setForm({...form, [field]: val});
-  }
-
-  const onAutocompleteChange = (e: any, value: any) => {
-    console.log("Valor", value)
-    setForm({...form, product: value}) ;
-  };
+  const handleForm = (field: string, val: string) => setForm({...form, [field]: val})
+  const onAutocompleteChange = (e: any, value: any) => setForm({...form, product: value});
 
   const getProducts = async (search?: string) => {
     setLoading(true);
     setProducts([]);
     try{
-      const res = await fetchProducts({query: search || ''});
-      setProducts(res.products)
+      const res = await fetchProductsToSale({query: search || ''});
+      setProducts(res)
     }
     catch(e) {
       console.error(e); // Colocar alert
@@ -65,11 +58,7 @@ export default function ProductForm() {
     setLoading(false);
   };
 
-
-
-  const toggleDrawer = () => {
-    dispatch(handleDrawer(false));
-  }
+  const closeDrawer = () => dispatch(handleDrawer(false));
 
   const handleCreate = async() => {
     setLoading(true);
@@ -86,7 +75,7 @@ export default function ProductForm() {
     setLoading(false);
     setErrors({});
     setForm(initialForm);
-    toggleDrawer();
+    closeDrawer();
     dispatch(getSelledProducts({}));
   }
 
@@ -96,9 +85,7 @@ export default function ProductForm() {
   }
 
   const handleSearchChange = useDebouncedCallback((event: any, value: string) => {
-    // Chamando duas vezes
-    console.log("Buscou", value);
-    getProducts(value);
+    if (form?.product?.label !== value) getProducts(value);
   }, 300);
   
   useEffect(() => {
@@ -111,7 +98,7 @@ export default function ProductForm() {
     <Drawer
       anchor='right'
       open={openDrawer}
-      onClose={toggleDrawer}
+      onClose={closeDrawer}
       PaperProps={{
         sx: { width: '100%', maxWidth: 450, p: 2 },
       }}
@@ -123,22 +110,22 @@ export default function ProductForm() {
             </Typography>
             <IconButton
             size="small"
-            onClick={toggleDrawer}
+            onClick={closeDrawer}
             >
               <CloseIcon />
             </IconButton>
           </Box>
 
           <Autocomplete
+            id="product"
             disablePortal
             fullWidth
             aria-required
-            id="product"
             value={form.product}
             onChange={onAutocompleteChange}
             onInputChange={handleSearchChange}
             // inputValue={search}
-            options={options}
+            options={products}
             loading={loading}
             open={isOpen}
             onOpen={() => {
@@ -162,26 +149,26 @@ export default function ProductForm() {
           <TextField
             fullWidth
             required
-            type="number"
+            type="text"
             id="quantity"
             name="quantity"
             label="Quantidade"
             placeholder="Quantidade"
             value={form.quantity}
-            onChange={(e) => handleForm('quantity', e.target.value)}
+            onChange={(e) => handleForm('quantity', valueOnlyDigits(e.target.value))}
             error={!!errors.quantity}
             helperText={errors.quantity && errors.quantity.map(e => e)}
           />
           <TextField
             fullWidth
             required
-            type="number"
+            type="text"
             id="value"
             name="value"
             label="Valor"
             placeholder="Valor"
-            value={form.sold_value}
-            onChange={(e) => handleForm('sold_value', e.target.value)}
+            value={valueCurrencyMask(form.sold_value.toString())}
+            onChange={(e) => handleForm('sold_value', valueCurrencyMask(e.target.value))}
             error={!!errors.sold_value}
             helperText={errors.sold_value && errors.sold_value.map(e => e)}
           />
@@ -192,7 +179,7 @@ export default function ProductForm() {
 
           <Box display="flex" gap={2} justifyContent="center"> 
             <Button type="submit" variant="contained" disabled={loading}>Criar</Button>
-            <Button type="button" color='error' variant="contained" disabled={loading} onClick={toggleDrawer}>cancelar</Button>
+            <Button type="button" color='error' variant="contained" disabled={loading} onClick={closeDrawer}>cancelar</Button>
           </Box>
 
       </Box>

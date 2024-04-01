@@ -3,13 +3,35 @@ import { unstable_noStore as noStore } from 'next/cache';
 import prisma from './prisma';
 import { format } from 'date-fns';
 import { valueCurrencyMask, valueOnlyDigits } from './utils';
+import { FetchProducts } from '@/src/types/products';
 
-interface FetchProducts {
-  page?: number;
-  perPage?: number;
-  query?: string;
-  startDate?: string;
-  endDate?: string;
+
+export async function fetchProductsToSale({ query = '' }) {
+  noStore();
+
+  try {
+    const products = await prisma.products.findMany({
+      take: 5,
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+   
+    return products.map(p => ({ id: p.id, label: p.name }));
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
 }
 
 export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchProducts) {
@@ -67,6 +89,7 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
   }
 }
 
+
 export async function fetchSelledProducts({query, page = 1, perPage = 5, startDate, endDate}: FetchProducts) {
   noStore();
 
@@ -102,6 +125,9 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5, startDa
             lte: endDate ? new Date(endDate) : undefined,
           } : undefined
         }
+      },
+      orderBy: {
+        createdAt: 'desc'
       },
       include: {
         product: {

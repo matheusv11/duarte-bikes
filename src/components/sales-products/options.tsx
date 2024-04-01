@@ -51,7 +51,7 @@ export default function TableOptions () {
     serverSide: true,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
-    tableBodyHeight:  '75vh', // Mudar
+    tableBodyMaxHeight:  '65vh', // Mudar
     customToolbar: () =>  <CustomToolbar />,
     customTableBodyFooterRender: (opts) => {
       return (

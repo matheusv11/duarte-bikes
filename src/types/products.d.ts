@@ -1,3 +1,16 @@
+export interface FetchProducts {
+  page?: number;
+  perPage?: number;
+  query?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export type TSelectedProduct = {
+  id: string;
+  label: string;
+}
+
 export type Product = {
   id: string;
   description: string | null;

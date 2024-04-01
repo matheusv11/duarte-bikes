@@ -1,20 +1,18 @@
 'use server';
 import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import prisma from './prisma'
-import { signIn, signOut } from '@/src/auth';
-import { AuthError } from 'next-auth';
-import bcrypt from 'bcrypt';
-import { put } from '@vercel/blob';
+
+import { format } from 'date-fns';
 
 const message = "Insira um valor acima de 0.";
 
 const SelledProductFormSchema = z.object({
   id: z.string(),
   product: z.any(), // Objeto
-  sold_value: z.coerce.number().gt(0, { message: message }),
-  quantity: z.coerce.number().gt(0, { message: message }),
+  sold_value: z.string(),
+  quantity: z.string(),
+  // sold_value: z.coerce.number().gt(0, { message: message }),
+  // quantity: z.coerce.number().gt(0, { message: message }),
   // date: z.string(),
   date: z.date(),
 });
@@ -22,7 +20,6 @@ const SelledProductFormSchema = z.object({
 
 const CreateSelledProduct = SelledProductFormSchema.omit({ id: true, date: true });
 const UpdateSelledProduct = SelledProductFormSchema.omit({ date: true, id: true });
-
 
 export async function createSelledProduct(data: any) { // Tipar
 
@@ -35,22 +32,20 @@ export async function createSelledProduct(data: any) { // Tipar
       message: 'Campos faltando. Erro ao criar produto.',
     };
   }
- 
-  const { date, product, quantity, sold_value } = validatedFields.data as any; 
- 
 
-  console.log("FIELDS", validatedFields.data);
-  
+  const { date, product, quantity, sold_value } = validatedFields.data as any; 
+
   try {
-    await prisma.selledProducts.create({ // Melhorar inserção
+    await prisma.selledProducts.create({
       data: {
-        createdAt: date,
+        createdAt: data.date,
         productId: product.id,
-        custom_sold_value: sold_value || null,
-        quantity: quantity,
+        custom_sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')) || null,
+        quantity: Number(quantity),
       },
     })
   } catch (error) {
+    console.log("Error", error)
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
