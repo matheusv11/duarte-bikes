@@ -5,7 +5,7 @@ import { fetchSelledProducts } from '@/src/lib/data';
 
 const initialState: ISaleProductState = {
   products: [],
-  totalValue: "",
+  totalValue: "0",
   productToDelete: null,
   loading: false,
   productToEdit: null,

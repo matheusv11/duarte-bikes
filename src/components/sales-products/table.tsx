@@ -1,11 +1,17 @@
 'use client'
-import MUIDataTable from "mui-datatables";
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/src/store";
 import columns from "./columns";
 import TableOptions from "./options";
 import {getSelledProducts } from '@/src/store/saleProductSlice'
+import dynamic from "next/dynamic";
+import CircularProgress from "@mui/material/CircularProgress";
+
+const MUIDataTable = dynamic(() => import("mui-datatables"), {
+  ssr: false,
+  loading: () => <CircularProgress/>
+});
 
 export default function Table() {
   const dispatch = useAppDispatch();
