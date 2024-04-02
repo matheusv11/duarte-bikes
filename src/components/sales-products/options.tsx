@@ -69,7 +69,7 @@ export default function TableOptions () {
                   } else if (col.name === "sold_value") {
                     return (
                       <TableCell sx={style.footerCell} key={index} >
-                        {valueCurrencyMask(totalValue.toString())}
+                        {totalValue ? valueCurrencyMask(totalValue.toString()) : totalValue}
                       </TableCell>
                     );
                   } else {

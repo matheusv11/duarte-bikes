@@ -4,17 +4,17 @@ import { useSearchParams} from 'next/navigation';
 import { getProducts } from "@/src/store/productSlice";
 import columns from './columns';
 import TableOptions from './options';
-import CircularProgress from "@mui/material/CircularProgress";
 
 import dynamic from "next/dynamic";
 
 const MUIDataTable = dynamic(() => import("mui-datatables"), {
   ssr: false,
-  loading: () => <CircularProgress/>
+  loading: () => <CircularLoading/>
 });
 
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import DeleteProductDialog from "./delete-product-dialog";
+import CircularLoading from "../navigation/circularLoading";
 
 export default function Table() {
   const dispatch = useAppDispatch();

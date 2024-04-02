@@ -6,11 +6,11 @@ import columns from "./columns";
 import TableOptions from "./options";
 import {getSelledProducts } from '@/src/store/saleProductSlice'
 import dynamic from "next/dynamic";
-import CircularProgress from "@mui/material/CircularProgress";
+import CircularLoading from '../navigation/circularLoading';
 
 const MUIDataTable = dynamic(() => import("mui-datatables"), {
   ssr: false,
-  loading: () => <CircularProgress/>
+  loading: () => <CircularLoading/>
 });
 
 export default function Table() {
