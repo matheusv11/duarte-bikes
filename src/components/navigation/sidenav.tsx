@@ -6,51 +6,65 @@ import { styled, useTheme } from '@mui/material/styles';
 import {Accordion, AccordionSummary,AccordionDetails, Box, Divider, Drawer, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, Button } from "@mui/material"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Routes } from '@/src/types/routes';
 import { drawerWidth } from "@/src/lib/constants";
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { logout } from '@/src/lib/authActions';
-
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PeopleIcon from '@mui/icons-material/People';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 const appRoutes: Routes = [
+  // {
+  //   name: 'Admin',
+  //   href: '/admin',
+  //   icon: <InboxIcon/>,
+  //   children: [{  name: 'Produtos',
+  //   href: '/admin/products',
+  //   icon: <InboxIcon/>},  {
+  //     name: 'Clientes',
+  //     href: '/admin/clients',
+  //     icon: <MailIcon/>
+  //   },]
+  // },
   {
     name: 'Admin',
     href: '/admin',
-    icon: <InboxIcon/>,
-    children: [{  name: 'Produtos',
-    href: '/admin/products',
-    icon: <InboxIcon/>},  {
-      name: 'Clientes',
-      href: '/admin/clients',
-      icon: <MailIcon/>
-    },]
+    icon: <AssignmentIndIcon/>,
   },
   {
     name: 'Produtos',
     href: '/admin/products',
-    icon: <InboxIcon/>
+    icon: <InventoryIcon/>
   },
   {
     name: 'Vendas',
     href: '/admin/sales',
-    icon: <InboxIcon/>
+    icon: <AttachMoneyIcon/>
   },
   {
     name: 'Clientes',
     href: '/admin/clients',
-    icon: <MailIcon/>
+    icon: <PeopleIcon/>
   },
   {
-    name: 'Alugueis',
+    name: 'Aluguéis',
     href: '/admin/rentals',
-    icon: <InboxIcon/>
+    icon: <AccessTimeIcon/>
+  },
+  {
+    name: 'Bikes',
+    href: '/admin/bikes',
+    icon: <DirectionsBikeIcon/>
   },
   {
     name: 'Logout',
     action: logout,
     href: '',
-    icon: <InboxIcon/>
+    icon: <LogoutIcon/>
   }
 ];
 
