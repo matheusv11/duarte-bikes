@@ -1,39 +1,14 @@
-'use-client'
-
+'use client'
 import { Button } from '@mui/material';
-import { DateRange } from '@mui/x-date-pickers-pro';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
-import { usePathname, useSearchParams, useRouter} from 'next/navigation';
-import { format } from 'date-fns';
-import {getSelledProducts,handleDrawer } from '@/src/store/saleProductSlice'
-import { useAppSelector, useAppDispatch } from "@/src/store";
+import { handleDrawer } from '@/src/store/saleProductSlice'
+import { useAppDispatch } from "@/src/store";
+import useTable from '@/src/lib/useTable';
 
 export default function CustomToolbar () {
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const createDate = (date: DateRange<Date>) => { // Passar pro useTable
-    
-    const params = new URLSearchParams(searchParams);
-
-    if(date.every(v => v)) {
-      const [startDate, endDate] = date as Array<Date>;
-
-      params.set('start', format(startDate, "yyyy-MM-dd") );
-      params.set('end', format(endDate, "yyyy-MM-dd"));
-
-    } else if (date.every(v => !v)) {
-      params.delete('start');
-      params.delete('end')      
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-
-
-  };
+  const { dateValues, createDate } = useTable();
   
   const readELement = () => {
     let timer1 = setTimeout(() => {
@@ -61,6 +36,7 @@ export default function CustomToolbar () {
      <>
       <DateRangePicker
         onOpen={readELement}
+        defaultValue={dateValues}
         slots={{ field: SingleInputDateRangeField }}
         name="allowedRange"
         onChange={createDate}

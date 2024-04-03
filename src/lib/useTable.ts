@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { DateRange } from '@mui/x-date-pickers-pro';
+import { format, parseISO } from 'date-fns';
 
 export default function useTable() {
   const searchParams = useSearchParams();
@@ -34,6 +37,23 @@ export default function useTable() {
     }
   }
 
+
+  const createDate = (date: DateRange<Date>) => { // Passar pro useTable
+    
+    if(date.every(v => v)) {
+      const [startDate, endDate] = date as Array<Date>;
+
+      params.set('start', format(startDate, "yyyy-MM-dd") );
+      params.set('end', format(endDate, "yyyy-MM-dd"));
+
+    } else if (date.every(v => !v)) {
+      params.delete('start');
+      params.delete('end')      
+    }
+
+    replace(`${pathname}?${params.toString()}`);
+  };
+
   const handleSearch = useDebouncedCallback((search) => {
 
     const params = new URLSearchParams(searchParams);
@@ -48,12 +68,25 @@ export default function useTable() {
     replace(`${pathname}?${params.toString()}`);
   }, 300);
 
+  const dateValues: DateRange<Date> = useMemo(() => {
+    const start = params.get('start');
+    const end = params.get('end')
+
+    if(start && end) {
+      return [parseISO(start), parseISO(end)]   
+    } else{
+      return [null, null]
+    }
+  }, []) 
+
+
   return {
     changeRows,
     handleSearch,
     closeSearch,
     changePage,
-
+    createDate,
+    dateValues
   }
 
 }

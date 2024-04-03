@@ -1,9 +1,9 @@
 'use client'
 import { MUIDataTableOptions } from "mui-datatables";
 import useTable from "@/src/lib/useTable";
-import {  LinearProgress, TableFooter, TableCell, TableRow } from "@mui/material";
-import { usePathname, useSearchParams, useRouter} from 'next/navigation';
-import { useAppDispatch, useAppSelector } from "@/src/store";
+import { LinearProgress, TableFooter, TableCell, TableRow } from "@mui/material";
+import { useSearchParams } from 'next/navigation';
+import { useAppSelector } from "@/src/store";
 import CustomToolbar from "./custom-toolbar";
 import { valueCurrencyMask } from "@/src/lib/utils";
 
@@ -25,14 +25,9 @@ const style = {
 export default function TableOptions () {
   const searchParams = useSearchParams();
 
-  const dispatch = useAppDispatch();
-  const {loading, totalCount, totalValue } = useAppSelector((state) => state.saleProduct);
+  const { loading, totalCount, totalValue } = useAppSelector((state) => state.saleProduct);
 
   const { closeSearch, changePage, handleSearch, changeRows } = useTable();
-
-
-  const pathname = usePathname();
-  const { replace } = useRouter();
 
   const currentPage = Number(searchParams.get('page')) || 1;
   const rows = Number(searchParams.get('rows')) || 5;
