@@ -70,6 +70,7 @@ model SelledProducts {
   id            String    @default(cuid()) @id
   custom_sold_value Float?
   quantity      Int
+  selledAt      DateTime  @map(name: "selled_at")
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   product    Products?   @relation(fields: [productId], references: [id])
