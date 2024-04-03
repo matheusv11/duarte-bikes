@@ -38,7 +38,7 @@ export async function createSelledProduct(data: any) { // Tipar
   try {
     await prisma.selledProducts.create({
       data: {
-        createdAt: data.date,
+        selledAt: data.date,
         productId: product.id,
         custom_sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')) || null,
         quantity: Number(quantity),

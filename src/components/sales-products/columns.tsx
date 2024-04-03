@@ -28,10 +28,10 @@ export default [ // Tipar // Alinhar coluna com oq retornar do banco
     },
     {
       name: "createdAt",
-      label: "Criado em",
+      label: "Vendido em",
     },
-    {
-      name: "updatedAt",
-      label: "Editado em",
-    },
+    // {
+    //   name: "updatedAt",
+    //   label: "Editado em",
+    // },
 ] satisfies MUIDataTableColumnDef[];

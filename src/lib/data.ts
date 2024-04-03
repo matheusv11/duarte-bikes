@@ -1,7 +1,7 @@
 'use server' // Assim posso chamar a vontade em um cliente, sem a request passar por client e ser no server
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from './prisma';
-import { format } from 'date-fns';
+import { endOfDay, format, startOfDay, parseISO } from 'date-fns';
 import { valueCurrencyMask, valueOnlyDigits } from './utils';
 import { FetchProducts } from '@/src/types/products';
 
@@ -95,37 +95,27 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5, startDa
 
   const skip = (page - 1) * perPage;
   const take = perPage;
-
   // Passar os parametros comuns na duas request pra uma const
 
-  console.log("Data inicio", startDate);
-  console.log("Data final", endDate);
+  const commonWhere = {
+    product: {
+      name: query || undefined,
+    },
+    selledAt: startDate && endDate ? {
+      gte: startDate ? startOfDay(parseISO(startDate)) : undefined,
+      lte: endDate ? endOfDay(parseISO(endDate)) : undefined,
+    } : undefined
+  } 
 
   try {
     const countProducts = await prisma.selledProducts.count({
-      where: {
-        product: {
-          name: query || undefined,
-          createdAt: startDate && endDate ? {
-            gte: startDate ? new Date(startDate) : undefined,
-            lte: endDate ? new Date(endDate) : undefined,
-          } : undefined
-        }
-      }
+      where: commonWhere
     }); // Talvez passar pra outro metodo, evitando toda request
 
     const products = await prisma.selledProducts.findMany({
       skip: skip,
       take: take,
-      where: {
-        product: {
-          name: query || undefined,
-          createdAt: startDate && endDate ? {
-            gte: startDate ? new Date(startDate) : undefined,
-            lte: endDate ? new Date(endDate) : undefined,
-          } : undefined
-        }
-      },
+      where: commonWhere,
       orderBy: {
         createdAt: 'desc'
       },
@@ -156,8 +146,8 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5, startDa
         product_name: p.product?.name,
         product_value: p.product?.sold_value,
         sold_value: p.custom_sold_value || p.product?.sold_value,
-        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
-        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+        createdAt: format(p.selledAt, "dd/MM/yyyy HH:mm:ss"),
+        // updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
       }
     ))
     return {
