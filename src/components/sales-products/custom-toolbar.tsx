@@ -12,16 +12,6 @@ export default function CustomToolbar () {
   
   const readELement = () => {
     let timer1 = setTimeout(() => {
-      const options = {
-        rootMargin: '0px',
-        threshold: 1.0
-      };
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          console.log(entry.intersectionRatio > 0 ? 'visible' : 'invisible');
-        });
-      }, options);
-  
       const elemento = document.querySelector("[style='position: absolute; pointer-events: none; color: rgba(130, 130, 130, 0.62); z-index: 100000; width: 100%; text-align: center; bottom: 50%; right: 0px; letter-spacing: 5px; font-size: 24px;']")
       elemento?.remove()
     }, 1 * 100);

@@ -12,7 +12,6 @@ export default function useTable() {
   const params = new URLSearchParams(searchParams);
 
   const changeRows = (rows: number) => {
-    
     params.set('page', '1');
     params.set('rows', rows.toString());
     
@@ -77,8 +76,13 @@ export default function useTable() {
     } else{
       return [null, null]
     }
-  }, []) 
+  }, []);
 
+  const currentPage = Number(params.get('page')) || 1;
+  const query = params.get('query') || '';
+  const rows = Number(params.get('rows')) || 5;
+  const startDate = params.get('start') || '';
+  const endDate =  params.get('end') || '';
 
   return {
     changeRows,
@@ -86,7 +90,12 @@ export default function useTable() {
     closeSearch,
     changePage,
     createDate,
-    dateValues
+    dateValues,
+    currentPage,
+    query,
+    rows,
+    startDate,
+    endDate
   }
 
 }

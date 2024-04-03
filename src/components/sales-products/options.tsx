@@ -2,11 +2,9 @@
 import { MUIDataTableOptions } from "mui-datatables";
 import useTable from "@/src/lib/useTable";
 import { LinearProgress, TableFooter, TableCell, TableRow } from "@mui/material";
-import { useSearchParams } from 'next/navigation';
 import { useAppSelector } from "@/src/store";
 import CustomToolbar from "./custom-toolbar";
 import { valueCurrencyMask } from "@/src/lib/utils";
-
 
 const style = {
   footerCell: {
@@ -23,14 +21,9 @@ const style = {
 }
 
 export default function TableOptions () {
-  const searchParams = useSearchParams();
 
   const { loading, totalCount, totalValue } = useAppSelector((state) => state.saleProduct);
-
-  const { closeSearch, changePage, handleSearch, changeRows } = useTable();
-
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const rows = Number(searchParams.get('rows')) || 5;
+  const { query, currentPage, rows, closeSearch, changePage, handleSearch, changeRows } = useTable();
 
   const options: MUIDataTableOptions = {
     filter: false,
@@ -44,6 +37,7 @@ export default function TableOptions () {
     count: totalCount,
     page: currentPage - 1,
     serverSide: true,
+    searchText: query,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
     tableBodyMaxHeight:  '65vh', // Mudar
@@ -82,10 +76,6 @@ export default function TableOptions () {
         noMatch: loading ? <LinearProgress/> : 'Não há conteúdo para a busca'
       }
     }
-    // onTableChange: () => {
-    //   console.log("Mudança")
-    // },
-    // customSearchRender: debounceSearchRender(500),
   }
 
   return options;

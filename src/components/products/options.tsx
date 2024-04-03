@@ -1,20 +1,14 @@
-import { useAppSelector, useAppDispatch } from "@/src/store";
+import { useAppSelector } from "@/src/store";
 import { MUIDataTableOptions } from "mui-datatables";
-import { useSearchParams} from 'next/navigation';
 import useTable from "@/src/lib/useTable";
 import CustomToolbar from "./custom-toolbar";
 import { LinearProgress } from "@mui/material";
 
 export default function TableOptions () {
-  const { loading, totalCount} = useAppSelector((state) => state.product);
-  const searchParams = useSearchParams();
-  const { closeSearch, changePage, handleSearch, changeRows } = useTable();
+  const { loading, totalCount } = useAppSelector((state) => state.product);
+  const { query, rows, currentPage, closeSearch, changePage, handleSearch, changeRows } = useTable();
 
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const rows = Number(searchParams.get('rows')) || 5;
- 
   const options: MUIDataTableOptions = { // FAZER, talvez seja memoizado no table.tsx
-    // filterType: 'dropdown',
     filter: false,
     sort: false,
     selectableRows: 'none',
@@ -28,6 +22,7 @@ export default function TableOptions () {
     count: totalCount,
     page: currentPage - 1,
     serverSide: true,
+    searchText: query,
     onSearchChange: handleSearch,
     onSearchClose: closeSearch,
     customToolbar: () =>  <CustomToolbar/>,
