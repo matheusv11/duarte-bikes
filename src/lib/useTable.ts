@@ -41,6 +41,7 @@ export default function useTable() {
     if(date.every(v => v)) {
       const [startDate, endDate] = date as Array<Date>;
 
+      params.set('page', '1');
       params.set('start', format(startDate, "yyyy-MM-dd") );
       params.set('end', format(endDate, "yyyy-MM-dd"));
 

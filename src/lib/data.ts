@@ -109,8 +109,14 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
   } 
 
   try {
-    const countProducts = await prisma.selledProducts.count({
-      where: commonWhere
+    const countProducts = await prisma.selledProducts.aggregate({
+      where: commonWhere,
+      _count: {
+        _all: true
+      },
+      _sum: {
+        soldValue: true
+      }
     }); // Talvez passar pra outro metodo, evitando toda request
 
     const products = await prisma.selledProducts.findMany({
@@ -130,9 +136,9 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
       }
     ))
     return {
-      totalValue: products.reduce((a, b) =>  a +  (b.soldValue), 0),
+      totalValue: countProducts._sum.soldValue,
       products: formatedProducts,
-      count: countProducts
+      count: countProducts._count._all
     }; // Tipar bem o retorno
   } catch (error) {
     console.error('Database Error:', error);
