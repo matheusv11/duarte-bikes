@@ -2,7 +2,7 @@
 
 // import styles from "@/src/styles/page.module.css";
 import Image from 'next/image';
-import logo from '@/public/images/instagram.webp';
+import logo from '@/public/images/logo.svg';
 import {Paper, Box, Button, Typography, TextField, Grid, IconButton, InputAdornment } from '@mui/material';
 import Link from "next/link";
 import { authenticate } from '@/src/lib/authActions';
@@ -56,6 +56,7 @@ export default function Login() {
             src={logo}
             className="mr-2 rounded-full"
             height={100}
+            style={{borderRadius: '50%'}}
             alt="duarte logo"
           />
         </Link>

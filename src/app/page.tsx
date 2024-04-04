@@ -3,7 +3,8 @@ import {Button, Grid, Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import AppBar from '@/src/components/navigation/appbar'
 import Image from 'next/image';
-import logo from '@/public/images/instagram.webp';
+// import logo from '@/public/images/instagram.webp';
+import logo from '@/public/images/logo.svg';
 import FlorPreta from '@/public/images/bora-bill.webp';
 import BoraBill from '@/public/images/flor-preta.webp';
 import Main from '@/src/components/navigation/main';
@@ -15,13 +16,13 @@ export default function Home() {
   return (
 
     <>
-    <Main open={true}>
+    {/* <Main open={true}> */}
       <Box sx={{display:"flex", flexDirection: 'column', background: 'pink', gap: 2}}>
         <Image
           src={logo}
           className="mr-2 rounded-full"
           // width={500}
-          style={{margin: 'auto'}}
+          style={{margin: 'auto', borderRadius: '50%'}}
           height={350}
           alt={`profile picture`}
         />
@@ -41,7 +42,7 @@ export default function Home() {
           {longText}
         </Typography>
 
-        <Grid container spacing={2}>
+        {/* <Grid container spacing={2}>
           {Array.from({ length: 22 }).map((currentElement, i) => (
             <Grid item md={2} xs={12} key={i}>
               <Image
@@ -55,10 +56,10 @@ export default function Home() {
             </Grid>
           ))}
       
-        </Grid>
+        </Grid> */}
 
       </Box>
-    </Main>
+    {/* </Main> */}
 
     </>
   );

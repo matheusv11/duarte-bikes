@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image';
-import logo from '@/public/images/instagram.webp';
+import logo from '@/public/images/logo.svg';
 import {Paper, Box, Button, Typography, TextField, Avatar, Grid, IconButton, InputAdornment } from '@mui/material';
 import Link from "next/link";
 import UploadIcon from '@mui/icons-material/Upload';
@@ -76,6 +76,7 @@ export default function RegisterForm() {
             <Image
               src={logo}
               height={100}
+              style={{ borderRadius: '50%' }}
               alt="duarte logo"
             />
           </Link>
