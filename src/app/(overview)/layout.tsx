@@ -13,6 +13,9 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
+  [theme.breakpoints.only('xs')]: {
+    padding: theme.spacing(1)
+  },
   padding: theme.spacing(3), // Adicionar pra pagina inteira talvez
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,

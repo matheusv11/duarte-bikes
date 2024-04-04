@@ -75,7 +75,7 @@ export default function useTable() {
 
   const currentPage = Number(params.get('page')) || 1;
   const query = params.get('query') || '';
-  const rows = Number(params.get('rows')) || 5;
+  const rows = Number(params.get('rows')) || 100;
   const startDate = params.get('start') || '';
   const endDate =  params.get('end') || '';
 

@@ -35,7 +35,7 @@ export async function fetchProductsToSale({ query = '' }) {
   }
 }
 
-export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchProducts) {
+export async function fetchProducts({query = '', page = 1, perPage = 100 }: FetchProducts) {
   noStore();
 
   const skip = (page - 1) * perPage;
@@ -92,7 +92,7 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
 
 
 // Mexer no formatedProducts
-export async function fetchSelledProducts({query, page = 1, perPage = 5, startDate, endDate}: FetchProducts) {
+export async function fetchSelledProducts({query, page = 1, perPage = 100, startDate, endDate}: FetchProducts) {
   noStore();
 
   const skip = (page - 1) * perPage;
