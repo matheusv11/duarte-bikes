@@ -33,28 +33,18 @@ model Users {
   name          String
   address       String
   cpf_cnpj      String
-  // confirmed     Boolean
-  kind          String // Or create a admin table
+  kind          String
   cellphone     String    @unique
   password      String
   rents         Rents[]
   @@map(name: "users")
 }
 
-// model Schedules {
-//   id              String    @default(cuid()) @id
-//   start  DateTime
-//   end    DateTime
-//   createdAt       DateTime  @default(now()) @map(name: "created_at")
-//   updatedAt       DateTime  @updatedAt @map(name: "updated_at")
-//   @@map(name: "schedules")
-// }
-
 model Rents {
   id              String    @default(cuid()) @id
   value           Float
   schedule_start  DateTime
-  schedule_end    DateTime
+  schedule_end    DateTime // If delete User, not delete rent history
   rented          Boolean // Only to block other user to pick this bike while other is paying
   paid            Boolean
   createdAt       DateTime  @default(now()) @map(name: "created_at")

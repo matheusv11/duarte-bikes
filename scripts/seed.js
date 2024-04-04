@@ -4,21 +4,21 @@ const { PrismaClient } = require('@prisma/client');
 
 const dataUsers = [
   {
-    cellphone: "89988191796",
+    cellphone: "89994107043",
     kind: "admin",
-    name: "pedro",
-    password: "senha1",
+    name: "Duarte",
+    password: "duar7e#@b1kes",
     address: 'Rua 1',
     cpf_cnpj: '192.168.203-72'
   },
-  {
-    cellphone: "86988191796",
-    kind: "user",
-    name: "joão",
-    password: "senha2",
-    address: 'Rua 2',
-    cpf_cnpj: '192.168.203-72'
-  }
+  // {
+  //   cellphone: "86988191796",
+  //   kind: "user",
+  //   name: "joão",
+  //   password: "senha2",
+  //   address: 'Rua 2',
+  //   cpf_cnpj: '192.168.203-72'
+  // }
 ]
 
 const dataProducts = Array.from({ length: 55 }).map((_, i) => (
@@ -72,8 +72,8 @@ async function seedProducts(prisma) {
 async function main() {
   const prisma = new PrismaClient();
 
-  // await seedUsers(prisma);
-  await seedProducts(prisma);
+  await seedUsers(prisma);
+  // await seedProducts(prisma);
 }
 
 main().catch((err) => {
