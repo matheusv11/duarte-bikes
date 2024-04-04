@@ -1,40 +1,50 @@
 'use server';
 import { z } from 'zod';
 import prisma from './prisma'
+import { stringCurrencyToNumber } from '@/src/lib/utils';
 
 const FormSchema = z.object({
   id: z.string(),
-  name: z.string().min(1),
+  name: z.string({
+    required_error: 'Campo deve conter no mínimo 1 caractere'
+  }).min(1),
   description: z.string(),
-  buyed_value: z.string(),
-  sold_value: z.string(),
-  quantity: z.string(),
+  buyedValue: z.string()
+    .transform((v) => stringCurrencyToNumber(v))
+    .refine((n) => n > 0, {
+      message: 'Valor deve ser acimad de R$ 0',
+    }),
+  soldValue: z.string()
+    .transform((v) => stringCurrencyToNumber(v))
+    .refine((n) => n > 0, {
+      message: 'Valor deve ser acimad de R$ 0',
+    }),
+  quantity: z.coerce.number().min(1),
   date: z.string(),
 });
 
 const CreateProduct = FormSchema.omit({ id: true, date: true });
-const UpdateProduct = FormSchema.omit({ date: true, id: true });
+const UpdateProduct = FormSchema.omit({ id: true, date: true });
 
 export async function createProduct(data: any) { // Tipar
   const validatedFields = CreateProduct.safeParse(data);
-
+  
   if (!validatedFields.success) {
-    console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Campos faltando. Erro ao criar produto.',
     };
   }
  
-  const { buyed_value,description, name, quantity, sold_value } = validatedFields.data;
+  const { buyedValue,description, name, quantity, soldValue } = validatedFields.data;
  
   try {
     await prisma.products.create({
       data: {
         name: name, 
-        buyedValue: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
-        quantity: Number(quantity),
-        soldValue: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        buyedValue: buyedValue,
+        quantity: quantity,
+        soldValue: soldValue,
         description: description
   
       },
@@ -58,15 +68,15 @@ export async function updateProduct(data: any) { // Tipar
     };
   }
  
-  const {buyed_value,description, name, quantity, sold_value } = validatedFields.data;
+  const {buyedValue, description, name, quantity, soldValue } = validatedFields.data;
   
   try {
     await prisma.products.update({
       data: {
         name: name, 
-        buyedValue: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
-        quantity: Number(quantity),
-        soldValue: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        buyedValue: buyedValue,
+        quantity: quantity,
+        soldValue: soldValue,
         description: description
   
       },
@@ -80,8 +90,6 @@ export async function updateProduct(data: any) { // Tipar
     };
   }
  
-  // revalidatePath('/admin/products'); // Passar pro redux
-  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
 
 export async function deleteProduct(id: string) {

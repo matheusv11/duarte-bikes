@@ -6,6 +6,14 @@ export interface FetchProducts {
   endDate?: string;
 }
 
+export type FormProductError = {
+  name?: string[] | undefined;
+  description?: string[] | undefined;
+  buyedValue?: string[] | undefined;
+  soldValue?: string[] | undefined;
+  quantity?: string[] | undefined;
+}
+
 export type TSelectedProduct = {
   id: string;
   name: string;

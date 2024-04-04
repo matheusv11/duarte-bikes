@@ -24,3 +24,7 @@ const maskCurrency = (val = '', locale = 'pt-BR', currency = 'BRL') => {
     currency
   }).format(val as any)
 }
+
+export const stringCurrencyToNumber = (val: string) => {
+  return Number(val.replace('R$', '').replace(/[^\w\s]/gi, ''));
+}
