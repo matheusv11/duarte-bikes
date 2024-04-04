@@ -1,7 +1,7 @@
 'use server';
 import { z } from 'zod';
 import prisma from './prisma'
-import { stringCurrencyToNumber } from '@/src/lib/utils';
+import { stringCurrencyToNumber } from './utils';
 
 const FormSchema = z.object({
   id: z.string(),

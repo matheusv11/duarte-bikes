@@ -163,7 +163,6 @@ export default function ProductForm() {
           />
           <TextField
             fullWidth
-            required
             type="text"
             id="value"
             name="value"

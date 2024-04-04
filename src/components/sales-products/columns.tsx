@@ -5,7 +5,7 @@ import { valueCurrencyMask } from "@/src/lib/utils";
 
 export default [ // Tipar // Alinhar coluna com oq retornar do banco
     {
-      name: "product_name",
+      name: "productName",
       label: "Produto",
     },
     {
@@ -13,14 +13,14 @@ export default [ // Tipar // Alinhar coluna com oq retornar do banco
       label: "Quantidade",
     },
     {
-      name: "product_value",
+      name: "productValue",
       label: "Valor produto",
       options: {
         customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
       }
     },
     {
-      name: "sold_value",
+      name: "soldValue",
       label: "Valor vendido",
       options: {
         customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
@@ -30,8 +30,4 @@ export default [ // Tipar // Alinhar coluna com oq retornar do banco
       name: "createdAt",
       label: "Vendido em",
     },
-    // {
-    //   name: "updatedAt",
-    //   label: "Editado em",
-    // },
 ] satisfies MUIDataTableColumnDef[];

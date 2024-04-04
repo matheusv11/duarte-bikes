@@ -31,7 +31,7 @@ export default function TableOptions () {
     selectableRows: 'none',
     rowsPerPage: rows,
     responsive: 'standard',
-    rowsPerPageOptions: [5, 10, 20],
+    rowsPerPageOptions: [5, 10, 20, 50, 100],
     onChangePage: changePage,
     onChangeRowsPerPage: changeRows,
     count: totalCount,
@@ -49,13 +49,13 @@ export default function TableOptions () {
             <TableRow>
               {opts.columns.map((col, index) => {
                 if (col.display === "true") {
-                  if (col.name === "product_name") {
+                  if (col.name === "productName") {
                     return (
                       <TableCell sx={style.footerCell} key={index} >
                         Total
                       </TableCell>
                     );
-                  } else if (col.name === "sold_value") {
+                  } else if (col.name === "soldValue") {
                     return (
                       <TableCell sx={style.footerCell} key={index} >
                         {totalValue ? valueCurrencyMask(totalValue.toString()) : totalValue}

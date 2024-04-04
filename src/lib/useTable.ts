@@ -36,7 +36,7 @@ export default function useTable() {
   }
 
 
-  const createDate = (date: DateRange<Date>) => { // Passar pro useTable
+  const createDate = (date: DateRange<Date>) => {
     
     if(date.every(v => v)) {
       const [startDate, endDate] = date as Array<Date>;

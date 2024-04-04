@@ -3,17 +3,19 @@ import { z } from 'zod';
 import prisma from './prisma'
 
 import { format } from 'date-fns';
-
-const message = "Insira um valor acima de 0.";
+import { stringCurrencyToNumber } from './utils';
 
 const SelledProductFormSchema = z.object({
   id: z.string(),
-  product: z.any(), // Objeto
-  soldValue: z.string(),
-  quantity: z.string(),
-  // sold_value: z.coerce.number().gt(0, { message: message }),
-  // quantity: z.coerce.number().gt(0, { message: message }),
-  // date: z.string(),
+  product: z.any(),
+  soldValue: z.string()
+    .transform((v) => stringCurrencyToNumber(v))
+    .refine((n) => n > 0, {
+      message: 'Valor deve ser acima de R$ 0',
+    })
+    .optional()
+    .or(z.literal('')),
+  quantity: z.coerce.number().min(1),
   date: z.date(),
 });
 
@@ -35,18 +37,15 @@ export async function createSelledProduct(data: any) { // Tipar
 
   const { date, product, quantity, soldValue } = validatedFields.data as any; 
 
-  const sold = Number(soldValue.replace('R$', '').replace(/[^\w\s]/gi, ''));
-  const quant = Number(quantity); // Deixar obrigatório
-
   try {
     await prisma.selledProducts.create({
       data: {
         productName: product.name,
         productValue: product.soldValue,
-        soldValue: sold ? sold : (quant * product.soldValue),
+        soldValue: soldValue ? soldValue : (quantity * product.soldValue),
         selledAt: data.date,
         productId: product.id,
-        quantity: quant,
+        quantity: quantity,
       },
     });
 
@@ -56,7 +55,7 @@ export async function createSelledProduct(data: any) { // Tipar
       },
       data: {
         quantity: {
-          decrement: quant
+          decrement: quantity
         }
       }
     })
