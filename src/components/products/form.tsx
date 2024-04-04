@@ -8,6 +8,7 @@ import { setProductToEdit, handleDrawer, getProducts } from "@/src/store/product
 import CloseIcon from '@mui/icons-material/Close';
 import {valueOnlyDigits, valueCurrencyMask } from '@/src/lib/utils';
 import { FormProductError } from '@/src/types/products';
+import useTable from '@/src/lib/useTable';
 
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
@@ -22,6 +23,7 @@ const initialForm = { // Tipar
 export default function ProductForm() {
   const dispatch = useAppDispatch();
   const { openDrawer, productToEdit } = useAppSelector((state) => state.product);
+  const { rows, query, currentPage } = useTable();
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -75,7 +77,7 @@ export default function ProductForm() {
     setErrors({});
     setForm(initialForm);
     dispatch(setProductToEdit(null as any));
-    dispatch(getProducts({}))
+    dispatch(getProducts({ currentPage, query, rows }))
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -89,6 +91,7 @@ export default function ProductForm() {
 
   useEffect(() => {
     if(productToEdit) {
+      console.log("PRODUTO", productToEdit)
       setForm(productToEdit as any)
     }else {
       setForm(initialForm)

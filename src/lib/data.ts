@@ -71,8 +71,8 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
         ...p,
         edit: {
           ...p,
-          buyed_value: valueCurrencyMask(p.buyedValue.toString()),
-          sold_value: valueCurrencyMask(p.soldValue.toString()),
+          buyedValue: valueCurrencyMask(p.buyedValue.toString()),
+          soldValue: valueCurrencyMask(p.soldValue.toString()),
           quantity: valueOnlyDigits(p.quantity.toString())
         },
         delete: {id: p.id, name: p.name},

@@ -60,7 +60,7 @@ export default function useTable() {
       params.delete('query');
     }
     replace(`${pathname}?${params.toString()}`);
-  }, 300);
+  }, 500);
 
   const dateValues: DateRange<Date> = useMemo(() => {
     const start = params.get('start');

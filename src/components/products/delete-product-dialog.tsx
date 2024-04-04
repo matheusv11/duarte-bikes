@@ -4,15 +4,17 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { deleteProduct } from "@/src/lib/productActions";
 import { getProducts, setProductToDelete } from "@/src/store/productSlice";
 import { useAppSelector, useAppDispatch } from "@/src/store";
+import useTable from "@/src/lib/useTable";
 
 export default function DeleteProductDialog () {
   const dispatch = useAppDispatch();
   const { productToDelete } = useAppSelector((state) => state.product);
-  
+  const { rows, query, currentPage } = useTable();
+
   const delProduct = async () => { // Talvez deixar no redux
     await deleteProduct(productToDelete?.id as string);
     dispatch(setProductToDelete(null));
-    dispatch(getProducts({}));
+    dispatch(getProducts({ rows, currentPage, query}));
   }
  
   const handleClose = () => dispatch(setProductToDelete(null));
