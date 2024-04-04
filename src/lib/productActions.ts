@@ -32,9 +32,9 @@ export async function createProduct(data: any) { // Tipar
     await prisma.products.create({
       data: {
         name: name, 
-        buyed_value: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        buyedValue: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         quantity: Number(quantity),
-        sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        soldValue: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         description: description
   
       },
@@ -64,9 +64,9 @@ export async function updateProduct(data: any) { // Tipar
     await prisma.products.update({
       data: {
         name: name, 
-        buyed_value: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        buyedValue: Number(buyed_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         quantity: Number(quantity),
-        sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
+        soldValue: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')),
         description: description
   
       },

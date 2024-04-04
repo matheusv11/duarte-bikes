@@ -16,18 +16,18 @@ type FormError = {
   name?: string[] | undefined;
   description?: string[] | undefined;
   buyed_value?: string[] | undefined;
-  sold_value?: string[] | undefined;
+  soldValue?: string[] | undefined;
   quantity?: string[] | undefined;
 }
 
 // Melhorar esses forms, componetizar pra reutilizar
 const initialForm = { // Tipar
   product: {
-    label: ''
+    name: '',
   },
   date: new Date(),
   quantity: "",
-  sold_value: "",
+  soldValue: "",
 }
 
 
@@ -85,7 +85,7 @@ export default function ProductForm() {
   }
 
   const handleSearchChange = useDebouncedCallback((event: any, value: string) => {
-    if (form?.product?.label !== value) getProducts(value);
+    if (form?.product?.name !== value) getProducts(value);
   }, 300);
   
   useEffect(() => {
@@ -122,6 +122,7 @@ export default function ProductForm() {
             fullWidth
             aria-required
             value={form.product}
+            getOptionLabel={(option) => option.name}
             onChange={onAutocompleteChange}
             onInputChange={handleSearchChange}
             // inputValue={search}
@@ -167,10 +168,10 @@ export default function ProductForm() {
             name="value"
             label="Valor"
             placeholder="Valor"
-            value={valueCurrencyMask(form.sold_value.toString())}
-            onChange={(e) => handleForm('sold_value', valueCurrencyMask(e.target.value))}
-            error={!!errors.sold_value}
-            helperText={errors.sold_value && errors.sold_value.map(e => e)}
+            value={valueCurrencyMask(form.soldValue.toString())}
+            onChange={(e) => handleForm('soldValue', valueCurrencyMask(e.target.value))}
+            error={!!errors.soldValue}
+            helperText={errors.soldValue && errors.soldValue.map(e => e)}
           />
           <DateTimePicker
             value={form.date}

@@ -69,7 +69,7 @@ export default function useTable() {
 
   const dateValues: DateRange<Date> = useMemo(() => {
     const start = params.get('start');
-    const end = params.get('end')
+    const end = params.get('end');
 
     if(start && end) {
       return [parseISO(start), parseISO(end)]   

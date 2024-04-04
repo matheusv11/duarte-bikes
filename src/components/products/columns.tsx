@@ -55,14 +55,14 @@ export default [ // Tipar // Alinhar coluna com oq retornar do banco
   label: "Descrição",
 },
 {
-  name: "buyed_value",
+  name: "buyedValue",
   label: "Valor comprado",
   options: {
     customBodyRender: (val) => val ? `${valueCurrencyMask(val.toString())}` : val
   }
 },
 {
-  name: "sold_value",
+  name: "soldValue",
   label: "Valor vendido",
   options: {
     customBodyRender: (val) => val ? `${valueCurrencyMask(val.toString())}` : val

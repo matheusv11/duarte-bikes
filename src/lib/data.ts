@@ -21,13 +21,14 @@ export async function fetchProductsToSale({ query = '' }) {
       select: {
         id: true,
         name: true,
+        soldValue: true,
       },
       orderBy: {
         createdAt: 'desc'
       }
     });
    
-    return products.map(p => ({ id: p.id, label: p.name }));
+    return products
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
@@ -70,8 +71,8 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
         ...p,
         edit: {
           ...p,
-          buyed_value: valueCurrencyMask(p.buyed_value.toString()),
-          sold_value: valueCurrencyMask(p.sold_value.toString()),
+          buyed_value: valueCurrencyMask(p.buyedValue.toString()),
+          sold_value: valueCurrencyMask(p.soldValue.toString()),
           quantity: valueOnlyDigits(p.quantity.toString())
         },
         delete: {id: p.id, name: p.name},
@@ -90,12 +91,12 @@ export async function fetchProducts({query = '', page = 1, perPage = 5 }: FetchP
 }
 
 
+// Mexer no formatedProducts
 export async function fetchSelledProducts({query, page = 1, perPage = 5, startDate, endDate}: FetchProducts) {
   noStore();
 
   const skip = (page - 1) * perPage;
   const take = perPage;
-  // Passar os parametros comuns na duas request pra uma const
 
   const commonWhere = {
     product: {
@@ -119,39 +120,17 @@ export async function fetchSelledProducts({query, page = 1, perPage = 5, startDa
       orderBy: {
         createdAt: 'desc'
       },
-      include: {
-        product: {
-          select: {
-            name: true,
-            sold_value: true
-          }
-        }
-      }
     });
 
     const formatedProducts = products
     .map(p => (
       {
         ...p,
-        edit: {
-          product: {
-            label: p.product?.name,
-            id: p.productId
-          },
-          date: p.createdAt,
-          quantity: p.quantity,
-          sold_value: p.custom_sold_value || p.product?.sold_value,
-        },
-        delete: {id: p.id, name: p.product?.name},
-        product_name: p.product?.name,
-        product_value: p.product?.sold_value,
-        sold_value: p.custom_sold_value || p.product?.sold_value,
         createdAt: format(p.selledAt, "dd/MM/yyyy HH:mm:ss"),
-        // updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
       }
     ))
     return {
-      totalValue: products.reduce((a, b) =>  a +  (b.custom_sold_value || b.product?.sold_value as any), 0),
+      totalValue: products.reduce((a, b) =>  a +  (b.soldValue), 0),
       products: formatedProducts,
       count: countProducts
     }; // Tipar bem o retorno

@@ -8,7 +8,8 @@ export interface FetchProducts {
 
 export type TSelectedProduct = {
   id: string;
-  label: string;
+  name: string;
+  soldValue: number;
 }
 
 export type Product = {

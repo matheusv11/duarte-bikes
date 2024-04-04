@@ -9,7 +9,7 @@ const message = "Insira um valor acima de 0.";
 const SelledProductFormSchema = z.object({
   id: z.string(),
   product: z.any(), // Objeto
-  sold_value: z.string(),
+  soldValue: z.string(),
   quantity: z.string(),
   // sold_value: z.coerce.number().gt(0, { message: message }),
   // quantity: z.coerce.number().gt(0, { message: message }),
@@ -33,17 +33,34 @@ export async function createSelledProduct(data: any) { // Tipar
     };
   }
 
-  const { date, product, quantity, sold_value } = validatedFields.data as any; 
+  const { date, product, quantity, soldValue } = validatedFields.data as any; 
+
+  const sold = Number(soldValue.replace('R$', '').replace(/[^\w\s]/gi, ''));
+  const quant = Number(quantity); // Deixar obrigatório
 
   try {
     await prisma.selledProducts.create({
       data: {
+        productName: product.name,
+        productValue: product.soldValue,
+        soldValue: sold ? sold : (quant * product.soldValue),
         selledAt: data.date,
         productId: product.id,
-        custom_sold_value: Number(sold_value.replace('R$', '').replace(/[^\w\s]/gi, '')) || null,
-        quantity: Number(quantity),
+        quantity: quant,
       },
+    });
+
+    await prisma.products.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        quantity: {
+          decrement: quant
+        }
+      }
     })
+    
   } catch (error) {
     console.log("Error", error)
     return {
