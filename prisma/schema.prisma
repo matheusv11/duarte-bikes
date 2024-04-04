@@ -67,14 +67,16 @@ model Rents {
 }
 
 model SelledProducts {
-  id            String    @default(cuid()) @id
-  custom_sold_value Float?
-  quantity      Int
-  selledAt      DateTime  @map(name: "selled_at")
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  product    Products?   @relation(fields: [productId], references: [id])
-  productId  String?
+  id                String    @default(cuid()) @id
+  productName       String    @map(name: "product_name")
+  productValue      Float     @map(name: "product_value")
+  soldValue         Float     @map(name: "sold_value")
+  quantity          Int
+  selledAt          DateTime  @map(name: "selled_at")
+  createdAt         DateTime  @default(now()) @map(name: "created_at")
+  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  product           Products? @relation(fields: [productId], references: [id])
+  productId         String?   @map("product_id")
   @@map(name: "selled_products")
 }
 
@@ -82,30 +84,11 @@ model Products {
   id            String    @default(cuid()) @id
   name          String
   description   String?
-  buyed_value   Float     // Value in cents
-  sold_value    Float     // Value in cents
+  buyedValue    Float     @map(name: "buyed_value")   // Value in cents
+  soldValue     Float     @map(name: "sold_value")// Value in cents
   quantity      Int
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   selledProducts         SelledProducts[]
   @@map(name: "products")
 }
-
-// model Post {
-//   id        String     @default(cuid()) @id
-//   title     String
-//   content   String?
-//   published Boolean @default(false)
-//   author    User?   @relation(fields: [authorId], references: [id])
-//   authorId  String?
-// }
-
-// model User { // Rodar
-//   id            String       @default(cuid()) @id
-//   name          String?
-//   email         String?   @unique
-//   createdAt     DateTime  @default(now()) @map(name: "created_at")
-//   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-//   posts         Post[]
-//   @@map(name: "users")
-// }
