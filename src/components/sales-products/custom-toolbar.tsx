@@ -25,6 +25,11 @@ export default function CustomToolbar () {
   return(
      <>
       <DateRangePicker
+        slotProps={{
+          actionBar: {
+            actions: ['accept', 'cancel', 'clear', 'today']
+          }
+        }}
         onOpen={readELement}
         defaultValue={dateValues}
         slots={{ field: SingleInputDateRangeField }}
