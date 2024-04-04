@@ -16,7 +16,7 @@ export default function Home() {
   return (
 
     <>
-    {/* <Main open={true}> */}
+    <Main open={true}>
       <Box sx={{display:"flex", flexDirection: 'column', background: 'pink', gap: 2}}>
         <Image
           src={logo}
@@ -59,7 +59,7 @@ export default function Home() {
         </Grid> */}
 
       </Box>
-    {/* </Main> */}
+    </Main>
 
     </>
   );
