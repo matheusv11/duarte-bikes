@@ -1,23 +1,14 @@
-'use client'
-import {Button, Grid, Box, Typography } from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
 import Link from 'next/link';
-import AppBar from '@/src/components/navigation/appbar'
 import Image from 'next/image';
-// import logo from '@/public/images/instagram.webp';
 import logo from '@/public/images/logo.svg';
-import FlorPreta from '@/public/images/bora-bill.webp';
-import BoraBill from '@/public/images/flor-preta.webp';
-import Main from '@/src/components/navigation/main';
 import { longText } from '@/src/lib/mock';
-const open = false;
-const handleDrawer = () => {};
 
 export default function Home() {
   return (
 
-    <>
-    <Main open={true}>
-      <Box sx={{display:"flex", flexDirection: 'column', background: 'pink', gap: 2}}>
+    <Box sx={{p: 1}}>
+      <Box sx={{display:"flex", flexDirection: 'column',  gap: 2, }}>
         <Image
           src={logo}
           className="mr-2 rounded-full"
@@ -33,9 +24,9 @@ export default function Home() {
             <Button color="success" variant="contained">Acessar</Button>
           </Link>
 
-          <Link href="/register">
+          {/* <Link href="/register">
             <Button variant="contained">Registrar-se</Button>
-          </Link>
+          </Link> */}
         </Box>
 
         <Typography variant="body1">
@@ -59,8 +50,7 @@ export default function Home() {
         </Grid> */}
 
       </Box>
-    </Main>
 
-    </>
+    </Box>
   );
 }
