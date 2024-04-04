@@ -93,6 +93,7 @@ export default function ProductForm() {
     }else {
       setForm(initialForm)
     }
+    setErrors({});
   }, [productToEdit]);
 
   return (

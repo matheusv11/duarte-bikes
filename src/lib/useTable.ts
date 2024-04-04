@@ -29,7 +29,6 @@ export default function useTable() {
   };
 
   const closeSearch = () => {
-    const params = new URLSearchParams(searchParams);
     if(params.get('query')){
       params.delete('query');
       replace(`${pathname}?${params.toString()}`);
@@ -54,12 +53,8 @@ export default function useTable() {
   };
 
   const handleSearch = useDebouncedCallback((search) => {
-
-    const params = new URLSearchParams(searchParams);
-
-    params.set('page', '1');
-
     if (search) {
+      params.set('page', '1');
       params.set('query', search);
     } else {
       params.delete('query');

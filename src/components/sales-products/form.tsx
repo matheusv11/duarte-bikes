@@ -90,6 +90,7 @@ export default function ProductForm() {
   
   useEffect(() => {
     if (isOpen) {
+      setErrors({});
       getProducts()
     }
   }, [isOpen]);
