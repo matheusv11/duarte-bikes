@@ -15,7 +15,7 @@ const initialState: ISaleProductState = {
 };
 
 export const getSelledProducts = createAsyncThunk(
-  'products/fetch',
+  'sale-products/fetch',
   async (params: TGetSaleProducts = {}, {rejectWithValue}) => {
     const { query, currentPage, rows, start, end }= params;
     

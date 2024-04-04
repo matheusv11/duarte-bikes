@@ -16,7 +16,7 @@ const MUIDataTable = dynamic(() => import("mui-datatables"), {
 
 export default function Table() {
   const dispatch = useAppDispatch();
-  const { products } = useAppSelector((state) => state.product);
+  const { products } = useAppSelector((state) => state.saleProduct);
   const options = TableOptions();
 
   const { rows, query, currentPage, startDate, endDate } = useTable();
