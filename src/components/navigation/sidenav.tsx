@@ -47,7 +47,7 @@ const appRoutes: Routes = [
   },
   {
     name: 'Clientes',
-    href: '/admin/clients',
+    href: '/admin/customers',
     icon: <PeopleIcon/>
   },
   {

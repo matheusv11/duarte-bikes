@@ -5,3 +5,16 @@ export interface User {
   kind: string;
   password: string;
 }
+
+export interface IUserState {
+  customers: any[] | [];
+  userToEdit: Product | null;
+  userToDelete: {
+    id: string;
+    name: string;
+  } | null;
+  openDrawer: boolean;
+  loading: boolean;
+  totalCount: number;
+  errors: any; // Tipar
+}

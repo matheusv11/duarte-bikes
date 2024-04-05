@@ -32,10 +32,12 @@ model Users {
   id            String    @default(cuid()) @id
   name          String
   address       String
-  cpf_cnpj      String
+  cpfCnpj       String    @map(name: "cpf_cnpj")
   kind          String
   cellphone     String    @unique
   password      String
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   rents         Rents[]
   @@map(name: "users")
 }

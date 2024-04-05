@@ -90,7 +90,6 @@ export async function fetchProducts({query = '', page = 1, perPage = 100 }: Fetc
   }
 }
 
-
 // Mexer no formatedProducts
 export async function fetchSelledProducts({query, page = 1, perPage = 100, startDate, endDate}: FetchProducts) {
   noStore();
@@ -140,6 +139,67 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
       products: formatedProducts,
       count: countProducts._count._all
     }; // Tipar bem o retorno
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function fetchCustomers({query = '', page = 1, perPage = 100 }: FetchProducts) {
+  noStore();
+
+  const skip = (page - 1) * perPage;
+  const take = perPage;
+
+  const commonWhere = {};
+  
+
+  try {
+    const countCustomers = await prisma.users.count({
+      where: {
+        // kind: '', // Logo adicionar
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      }
+    });
+
+    const customers = await prisma.users.findMany({
+      skip: skip,
+      take: take,
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      },
+      orderBy: {
+        createdAt: 'desc',
+      }
+    });
+
+    console.log("Customers", customers);
+    
+    const formatedCustomers = customers
+    .map(p => (
+      {
+        ...p,
+        // edit: {
+        //   ...p,
+        //   buyedValue: valueCurrencyMask(p.buyedValue.toString()),
+        //   soldValue: valueCurrencyMask(p.soldValue.toString()),
+        //   quantity: valueOnlyDigits(p.quantity.toString())
+        // },
+        // delete: {id: p.id, name: p.name},
+        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
+        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+      }
+    ))
+    return {
+      customers: formatedCustomers,
+      count: countCustomers
+    };
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
