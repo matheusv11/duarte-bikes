@@ -42,7 +42,7 @@ export const userSlice = createSlice({
       state.userToEdit = action.payload;
     },
     setUserToDelete: (state, action: PayloadAction<IProductState['productToDelete']>) => {
-      state.userToEdit = action.payload;
+      state.userToDelete = action.payload;
     },
   },
   extraReducers: (builder) => {

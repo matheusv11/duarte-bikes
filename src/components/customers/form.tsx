@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, } from '@mui/material';
-import { createCustomer, updateProduct } from '@/src/lib/userActions';
+import { createCustomer, updateCustomer } from '@/src/lib/userActions';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import { setUserToEdit,  handleDrawer, getCustomers } from "@/src/store/userSlice";
@@ -61,7 +61,7 @@ export default function UserForm() {
   const handleUpdate = async() => {
     setLoading(true);
 
-    const response = await updateProduct(form);
+    const response = await updateCustomer(form);
     if(response?.errors)  {
       console.log("Response", response);
       setLoading(false);
@@ -88,7 +88,6 @@ export default function UserForm() {
 
   useEffect(() => {
     if(userToEdit) {
-      console.log("PRODUTO", userToEdit)
       setForm(userToEdit as any)
     }else {
       setForm(initialForm)
@@ -108,7 +107,7 @@ export default function UserForm() {
       <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleSubmit}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="body1" fontWeight="bold">
-              Cadastrar Cliente
+              {userToEdit ? 'Editar' : 'Cadastrar'} Cliente
             </Typography>
             <IconButton
             size="small"

@@ -16,7 +16,7 @@ const FormSchema = z.object({
 });
 
 const CreateCustomer = FormSchema.omit({ id: true, date: true });
-const UpdateProduct = FormSchema.omit({ id: true, date: true });
+const UpdateCustomer = FormSchema.omit({ id: true, date: true });
 
 export async function createCustomer(data: any) { // Tipar
   const validatedFields = CreateCustomer.safeParse(data);
@@ -50,8 +50,8 @@ export async function createCustomer(data: any) { // Tipar
  
 }
 
-export async function updateProduct(data: any) { // Tipar
-  const validatedFields = UpdateProduct.safeParse(data);
+export async function updateCustomer(data: any) { // Tipar
+  const validatedFields = UpdateCustomer.safeParse(data);
 
   if (!validatedFields.success) {
     console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
@@ -61,16 +61,15 @@ export async function updateProduct(data: any) { // Tipar
     };
   }
  
-  const {buyedValue, description, name, quantity, soldValue } = validatedFields.data;
+  const { name, address,cellphone,cpfCnpj } = validatedFields.data;
   
   try {
-    await prisma.products.update({
+    await prisma.users.update({
       data: {
         name: name, 
-        buyedValue: buyedValue,
-        quantity: quantity,
-        soldValue: soldValue,
-        description: description
+        address: address,
+        cellphone: cellphone,
+        cpfCnpj: cpfCnpj,
   
       },
       where: {
@@ -85,11 +84,11 @@ export async function updateProduct(data: any) { // Tipar
  
 }
 
-export async function deleteProduct(id: string) {
+export async function deleteUser(id: string) {
   // throw new Error('Failed to Delete Invoice');
 
   try {
-    await prisma.products.delete({
+    await prisma.users.delete({
       where: {
         id: id
       }

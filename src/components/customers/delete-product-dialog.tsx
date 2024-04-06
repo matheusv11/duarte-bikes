@@ -1,34 +1,34 @@
 'use client';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { deleteProduct } from "@/src/lib/productActions";
-import { getProducts, setProductToDelete } from "@/src/store/productSlice";
+import { deleteUser } from "@/src/lib/userActions";
+import { getCustomers, setUserToDelete } from "@/src/store/userSlice";
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import useTable from "@/src/lib/useTable";
 
 export default function DeleteProductDialog () {
   const dispatch = useAppDispatch();
-  const { productToDelete } = useAppSelector((state) => state.product);
+  const { userToDelete } = useAppSelector((state) => state.user);
   const { rows, query, currentPage } = useTable();
 
   const delProduct = async () => { // Talvez deixar no redux
-    await deleteProduct(productToDelete?.id as string);
-    dispatch(setProductToDelete(null));
-    dispatch(getProducts({ rows, currentPage, query}));
+    await deleteUser(userToDelete?.id as string);
+    dispatch(setUserToDelete(null));
+    dispatch(getCustomers({ rows, currentPage, query}));
   }
  
-  const handleClose = () => dispatch(setProductToDelete(null));
+  const handleClose = () => dispatch(setUserToDelete(null));
 
   return (
     <>
     <Dialog
-        open={!!productToDelete}
+        open={!!userToDelete}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {`Tem certeza que deseja deletar ${productToDelete?.name}`}
+          {`Tem certeza que deseja deletar ${userToDelete?.name}`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

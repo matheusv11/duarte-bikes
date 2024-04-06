@@ -13,12 +13,6 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-// model ProductTypes {
-//   id            String    @default(cuid()) @id
-//   name          String
-//   @@map(name: "products_types")
-// }
-
 model Bikes {
     id            String    @default(cuid()) @id
     model         String

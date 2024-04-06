@@ -168,7 +168,7 @@ export async function fetchCustomers({query = '', page = 1, perPage = 100 }: Fet
   try {
     const countCustomers = await prisma.users.count({
       where: {
-        // kind: '', // Logo adicionar
+        kind: 'user',
         name: {
           contains: query,
           mode: 'insensitive'
@@ -180,6 +180,7 @@ export async function fetchCustomers({query = '', page = 1, perPage = 100 }: Fet
       skip: skip,
       take: take,
       where: {
+        kind: 'user',
         name: {
           contains: query,
           mode: 'insensitive'
@@ -196,13 +197,11 @@ export async function fetchCustomers({query = '', page = 1, perPage = 100 }: Fet
     .map(p => (
       {
         ...p,
-        // edit: {
-        //   ...p,
-        //   buyedValue: valueCurrencyMask(p.buyedValue.toString()),
-        //   soldValue: valueCurrencyMask(p.soldValue.toString()),
-        //   quantity: valueOnlyDigits(p.quantity.toString())
-        // },
-        // delete: {id: p.id, name: p.name},
+        edit: {
+          ...p,
+          
+        },
+        delete: {id: p.id, name: p.name},
         createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
         updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
       }
