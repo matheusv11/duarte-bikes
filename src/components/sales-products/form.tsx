@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, TextField, Drawer, Typography, IconButton, Box, Autocomplete, CircularProgress, } from '@mui/material';
-import { createSelledProduct } from '@/src/lib/selledProductActions';
+import { updateSelledProduct, createSelledProduct } from '@/src/lib/selledProductActions';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from "@/src/store";
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,7 +9,7 @@ import { TSelectedProduct } from '@/src/types/products';
 import { fetchProductsToSale } from '@/src/lib/data';
 import { useDebouncedCallback } from 'use-debounce';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { getSelledProducts, handleDrawer } from '@/src/store/saleProductSlice'
+import { getSelledProducts, handleDrawer, setProductToEdit } from '@/src/store/saleProductSlice'
 import {valueOnlyDigits, valueCurrencyMask } from "@/src/lib/utils";
 
 type FormError = {
@@ -35,7 +35,7 @@ export default function ProductForm() {
   const dispatch = useAppDispatch();
   const [products, setProducts] = useState<TSelectedProduct[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const { openDrawer } = useAppSelector((state) => state.saleProduct);
+  const { productToEdit, openDrawer } = useAppSelector((state) => state.saleProduct);
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,6 +43,7 @@ export default function ProductForm() {
 
   const handleForm = (field: string, val: string) => setForm({...form, [field]: val})
   const onAutocompleteChange = (e: any, value: any) => setForm({...form, product: value});
+  const handleOpen = useMemo(() => (!!productToEdit || openDrawer), [productToEdit, openDrawer]);
 
   const getProducts = async (search?: string) => {
     setLoading(true);
@@ -58,7 +59,10 @@ export default function ProductForm() {
     setLoading(false);
   };
 
-  const closeDrawer = () => dispatch(handleDrawer(false));
+  const closeDrawer = () => {
+    dispatch(setProductToEdit(null))
+    dispatch(handleDrawer(false))
+  };
 
   const handleCreate = async() => {
     setLoading(true);
@@ -79,9 +83,33 @@ export default function ProductForm() {
     dispatch(getSelledProducts({}));
   }
 
+  const handleUpdate = async () => {
+    setLoading(true);
+
+    const response = await updateSelledProduct(form);
+    if(response?.errors)  {
+      console.log("Response", response);
+      setLoading(false);
+      setErrors(response.errors);
+      // Apenas setar o error de form ao ter conteúdo de form
+      // Caso for coisa de db, retornar numa caixa de mensagem
+      return // Alerta de erro e nas mensagens
+    }
+    setLoading(false);
+    setErrors({});
+    setForm(initialForm);
+    closeDrawer();
+    dispatch(getSelledProducts({}));
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleCreate();
+    if(productToEdit) {
+      handleUpdate();
+    }else {
+      handleCreate();
+
+    }
   }
 
   const handleSearchChange = useDebouncedCallback((event: any, value: string) => {
@@ -95,10 +123,17 @@ export default function ProductForm() {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+
+    if(productToEdit) {
+      setForm(productToEdit)
+    }
+  }, [productToEdit]);
+
   return (
     <Drawer
       anchor='right'
-      open={openDrawer}
+      open={handleOpen}
       onClose={closeDrawer}
       PaperProps={{
         sx: { width: '100%', maxWidth: 450, p: 2 },
@@ -107,7 +142,7 @@ export default function ProductForm() {
       <Box display="flex" flexDirection="column" gap={2} component="form" onSubmit={handleSubmit}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="body1" fontWeight="bold">
-              Registrar Venda
+              {productToEdit ? 'Editar' :'Registrar'} Venda
             </Typography>
             <IconButton
             size="small"
@@ -120,6 +155,7 @@ export default function ProductForm() {
           <Autocomplete
             id="product"
             disablePortal
+            disabled={!!productToEdit}
             fullWidth
             aria-required
             value={form.product}
@@ -166,7 +202,7 @@ export default function ProductForm() {
             type="text"
             id="value"
             name="value"
-            label="Valor"
+            label="Valor (Valor vendido caso tenha feito desconto)"
             placeholder="Valor"
             value={valueCurrencyMask(form.soldValue.toString())}
             onChange={(e) => handleForm('soldValue', valueCurrencyMask(e.target.value))}
@@ -179,7 +215,7 @@ export default function ProductForm() {
           />
 
           <Box display="flex" gap={2} justifyContent="center"> 
-            <Button type="submit" variant="contained" disabled={loading}>Criar</Button>
+            <Button type="submit" variant="contained" disabled={loading}>{productToEdit ? 'Editar' : 'Criar'}</Button>
             <Button type="button" color='error' variant="contained" disabled={loading} onClick={closeDrawer}>cancelar</Button>
           </Box>
 

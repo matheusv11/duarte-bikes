@@ -28,6 +28,8 @@ export default function TableOptions () {
   const options: MUIDataTableOptions = {
     filter: false,
     sort: false,
+    download: false,
+    print: false,
     selectableRows: 'none',
     rowsPerPage: rows,
     responsive: 'standard',

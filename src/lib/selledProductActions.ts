@@ -21,7 +21,7 @@ const SelledProductFormSchema = z.object({
 
 
 const CreateSelledProduct = SelledProductFormSchema.omit({ id: true, date: true });
-const UpdateSelledProduct = SelledProductFormSchema.omit({ date: true, id: true });
+const UpdateSelledProduct = SelledProductFormSchema.omit({ id: true, date: true });
 
 export async function createSelledProduct(data: any) { // Tipar
 
@@ -45,6 +45,59 @@ export async function createSelledProduct(data: any) { // Tipar
         soldValue: soldValue ? soldValue : (quantity * product.soldValue),
         selledAt: data.date,
         productId: product.id,
+        quantity: quantity,
+      },
+    });
+
+    await prisma.products.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        quantity: {
+          decrement: quantity
+        }
+      }
+    })
+    
+  } catch (error) {
+    console.log("Error", error)
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+ 
+  // revalidatePath('/admin/products');
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+}
+
+export async function updateSelledProduct(data: any) { // Tipar
+
+  console.log("Data", data)
+  const validatedFields = UpdateSelledProduct.safeParse(data);
+
+  if (!validatedFields.success) {
+    console.log("Algo deu errado", validatedFields.error.flatten().fieldErrors)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Campos faltando. Erro ao criar produto.',
+    };
+  }
+
+  const { date, product, quantity, soldValue } = validatedFields.data as any; 
+
+  try {
+    await prisma.selledProducts.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        // productName: product.name,
+        // productValue: product.soldValue,
+        // productId: product.id,
+        // soldValue: soldValue ? soldValue : (quantity * product.soldValue),
+        soldValue: soldValue,
+        selledAt: data.date,
         quantity: quantity,
       },
     });

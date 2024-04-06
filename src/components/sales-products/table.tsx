@@ -30,7 +30,6 @@ export default function Table() {
       <MUIDataTable
         title={"Vendas"}
         data={products}
-        // data={largeSelledProductsData}
         columns={columns}
         options={options}
       />

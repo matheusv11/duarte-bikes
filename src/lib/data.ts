@@ -131,6 +131,16 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
     .map(p => (
       {
         ...p,
+        edit: {
+          ...p,
+          product: {
+            id: p.id,
+            name: p.productName,
+            // soldValue: valueCurrencyMask(p.soldValue.toString()),
+          },
+          soldValue: valueCurrencyMask(p.soldValue.toString()),
+          date: p.selledAt
+        },
         createdAt: format(p.selledAt, "dd/MM/yyyy HH:mm:ss"),
       }
     ))

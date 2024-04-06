@@ -11,6 +11,8 @@ export default function TableOptions () {
   const options: MUIDataTableOptions = { // FAZER, talvez seja memoizado no table.tsx
     filter: false,
     sort: false,
+    download: false,
+    print: false,
     selectableRows: 'none',
     rowsPerPage: rows,
     responsive: 'standard',

@@ -38,6 +38,12 @@ export const saleProductSlice = createSlice({
     handleDrawer: (state, action: PayloadAction<boolean>) => {
       state.openDrawer = action.payload
     },
+    setProductToEdit: (state, action: PayloadAction<any>) => {
+      state.productToEdit = action.payload;
+    },
+    setProductToDelete: (state, action: PayloadAction<any>) => {
+      state.productToDelete = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getSelledProducts.pending, (state) => {
@@ -58,5 +64,5 @@ export const saleProductSlice = createSlice({
 
 });
 
-export const { handleDrawer } = saleProductSlice.actions;
+export const { setProductToDelete, setProductToEdit, handleDrawer } = saleProductSlice.actions;
 export const saleProductReducer = saleProductSlice.reducer;
