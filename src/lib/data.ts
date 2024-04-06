@@ -141,6 +141,7 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
           soldValue: valueCurrencyMask(p.soldValue.toString()),
           date: p.selledAt
         },
+        delete: {id: p.id, name: p.productName},
         createdAt: format(p.selledAt, "dd/MM/yyyy HH:mm:ss"),
       }
     ))

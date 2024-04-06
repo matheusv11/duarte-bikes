@@ -11,6 +11,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { getSelledProducts, handleDrawer, setProductToEdit } from '@/src/store/saleProductSlice'
 import {valueOnlyDigits, valueCurrencyMask } from "@/src/lib/utils";
+import useTable from '@/src/lib/useTable';
 
 type FormError = {
   name?: string[] | undefined;
@@ -40,6 +41,7 @@ export default function ProductForm() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormError>({});// Tipar
+  const { rows, query, currentPage } = useTable();
 
   const handleForm = (field: string, val: string) => setForm({...form, [field]: val})
   const onAutocompleteChange = (e: any, value: any) => setForm({...form, product: value});
@@ -99,7 +101,7 @@ export default function ProductForm() {
     setErrors({});
     setForm(initialForm);
     closeDrawer();
-    dispatch(getSelledProducts({}));
+    dispatch(getSelledProducts({ currentPage, query, rows }));
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

@@ -123,3 +123,22 @@ export async function updateSelledProduct(data: any) { // Tipar
   // revalidatePath('/admin/products');
   // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
 }
+
+export async function deleteProduct(id: string) {
+  // throw new Error('Failed to Delete Invoice');
+
+  try {
+    await prisma.selledProducts.delete({
+      where: {
+        id: id
+      }
+    })
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    };
+  }
+
+  // redirect('/admin/products'); // Devido ao client side na table, eu recarrego a página pro useEffect rolar
+
+}

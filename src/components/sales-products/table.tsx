@@ -8,6 +8,7 @@ import {getSelledProducts } from '@/src/store/saleProductSlice'
 import dynamic from "next/dynamic";
 import CircularLoading from '@/src/components/navigation/circularLoading';
 import useTable from '@/src/lib/useTable';
+import DeleteProductDialog from "./delete-product-dialog";
 
 const MUIDataTable = dynamic(() => import("mui-datatables"), {
   ssr: false,
@@ -33,6 +34,7 @@ export default function Table() {
         columns={columns}
         options={options}
       />
+      <DeleteProductDialog/>
     </>
   )
   
