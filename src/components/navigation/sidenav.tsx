@@ -86,15 +86,17 @@ interface LinkButton {
   name: string;
   action?: () => void;
   pathname: string;
+  handleDrawer: () => void;
   icon?: React.ReactNode;
 }
 
 interface SideLinks {
   routes: Routes;
   pathname: string;
+  handleDrawer?: () => void;
 }
 
-const LinkButton = ({href, action, name, pathname, icon }: LinkButton) => {
+const LinkButton = ({handleDrawer, href, action, name, pathname, icon }: LinkButton) => {
   
   const BtnContent = (
     <Box
@@ -109,6 +111,7 @@ const LinkButton = ({href, action, name, pathname, icon }: LinkButton) => {
       background: pathname === href ? 'orange' : 'white'
     }}
     onClick={() => {
+      handleDrawer();
       if(action) action();
     }}
   >
@@ -131,7 +134,7 @@ const LinkButton = ({href, action, name, pathname, icon }: LinkButton) => {
 
 // Verificar se tá bom o desempenho do recursivo
 
-const SideLinks = ({routes, pathname}: SideLinks) => (
+const SideLinks = ({handleDrawer, routes, pathname}: SideLinks) => (
   <List>
     {routes.map((r) => (
       <ListItem key={r.name} disablePadding>
@@ -157,7 +160,7 @@ const SideLinks = ({routes, pathname}: SideLinks) => (
             </AccordionDetails>
           </Accordion>
           :
-          <LinkButton action={r.action} href={r.href} name={r.name} pathname={pathname} icon={r.icon}/>}
+          <LinkButton handleDrawer={handleDrawer} action={r.action} href={r.href} name={r.name} pathname={pathname} icon={r.icon}/>}
       </ListItem>
     ))}
   </List>
@@ -187,7 +190,7 @@ export default function SideNav({ open, handleDrawer }: SideNav) {
       </IconButton>
     </DrawerHeader>
     <Divider />
-    <SideLinks routes={appRoutes} pathname={pathname}/>
+    <SideLinks handleDrawer={handleDrawer} routes={appRoutes} pathname={pathname}/>
   </Drawer>
   );
 }
