@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { usePathname, useSearchParams, useRouter} from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { DateRange } from '@mui/x-date-pickers-pro';
-import { format, parseISO } from 'date-fns';
+import { endOfMonth, format, parseISO, startOfMonth } from 'date-fns';
 
 export default function useTable() {
   const searchParams = useSearchParams();
@@ -70,7 +70,7 @@ export default function useTable() {
     if(start && end) {
       return [parseISO(start), parseISO(end)]   
     } else{
-      return [null, null]
+      return [startOfMonth(new Date), endOfMonth(new Date)]
     }
   }, []);
 

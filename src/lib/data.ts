@@ -1,7 +1,7 @@
 'use server' // Assim posso chamar a vontade em um cliente, sem a request passar por client e ser no server
 import { unstable_noStore as noStore } from 'next/cache';
 import prisma from './prisma';
-import { endOfDay, format, startOfDay, parseISO } from 'date-fns';
+import { endOfDay, endOfMonth, startOfMonth, format, startOfDay, parseISO } from 'date-fns';
 import { valueCurrencyMask, valueOnlyDigits } from './utils';
 import { FetchProducts } from '@/src/types/products';
 
@@ -97,14 +97,19 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
   const skip = (page - 1) * perPage;
   const take = perPage;
 
+
   const commonWhere = {
     product: {
       name: query || undefined,
     },
-    selledAt: startDate && endDate ? {
-      gte: startDate ? startOfDay(parseISO(startDate)) : undefined,
-      lte: endDate ? endOfDay(parseISO(endDate)) : undefined,
-    } : undefined
+    selledAt:{
+      gte: startDate ? startOfDay(parseISO(startDate)) : startOfMonth(new Date()),
+      lte: endDate ? endOfDay(parseISO(endDate)) : endOfMonth(new Date()),
+    }
+    // selledAt: startDate && endDate ? {
+    //   gte: startDate ? startOfDay(parseISO(startDate)) : undefined,
+    //   lte: endDate ? endOfDay(parseISO(endDate)) : undefined,
+    // } : undefined
   } 
 
   try {
