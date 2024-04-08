@@ -3,6 +3,7 @@ import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
 import { persistReducer } from "redux-persist";
 import { productReducer } from "@/src/store/productSlice";
 import { saleProductReducer } from "@/src/store/saleProductSlice";
+import { bikeReducer } from "@/src/store/bikeSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { userReducer } from "./userSlice";
 
@@ -37,7 +38,8 @@ const createNoopStorage = () => {
 const rootReducer = combineReducers({ // Don't need to persist reduce now
   product: productReducer,
   saleProduct: saleProductReducer,
-  user: userReducer
+  user: userReducer,
+  bike: bikeReducer
 });
 
 export const store = configureStore({

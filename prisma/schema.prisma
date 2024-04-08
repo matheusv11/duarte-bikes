@@ -15,9 +15,11 @@ datasource db {
 
 model Bikes {
     id            String    @default(cuid()) @id
-    model         String
-    image         String
+    name          String
+    description   String?
     quantity      Int
+    createdAt     DateTime  @default(now()) @map(name: "created_at")
+    updatedAt     DateTime  @updatedAt @map(name: "updated_at")
     rents         Rents[]
     @@map(name: "bikes")
 }

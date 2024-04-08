@@ -226,3 +226,56 @@ export async function fetchCustomers({query = '', page = 1, perPage = 100 }: Fet
     throw new Error('Failed to fetch revenue data.');
   }
 }
+
+export async function fetchBikes({query = '', page = 1, perPage = 100 }: FetchProducts) {
+  noStore();
+
+  const skip = (page - 1) * perPage;
+  const take = perPage;
+
+  try {
+    const countBikes = await prisma.bikes.count({
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      }
+    });
+
+    const bikes = await prisma.bikes.findMany({
+      skip: skip,
+      take: take,
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    const formatedBikes = bikes
+    .map(p => (
+      {
+        ...p,
+        edit: {
+          ...p,
+          quantity: valueOnlyDigits(p.quantity.toString())
+        },
+        delete: {id: p.id, name: p.name},
+        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
+        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+      }
+    ))
+    return {
+      bikes: formatedBikes,
+      count: countBikes
+    }; // Tipar bem o retorno
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
