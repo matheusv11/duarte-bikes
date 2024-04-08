@@ -145,6 +145,7 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
           product: {
             id: p.id,
             name: p.productName,
+            buyedValue: p.productBuyedValue
             // soldValue: valueCurrencyMask(p.soldValue.toString()),
           },
           soldValue: valueCurrencyMask(p.soldValue.toString()),

@@ -87,7 +87,7 @@ export async function updateSelledProduct(data: any) { // Tipar
     };
   }
 
-  const { date, product, quantity, soldValue } = validatedFields.data as any; 
+  const { date, product, quantity, soldValue } = validatedFields.data as any;
 
   try {
     await prisma.selledProducts.update({
@@ -99,6 +99,7 @@ export async function updateSelledProduct(data: any) { // Tipar
         // productValue: product.soldValue,
         // productId: product.id,
         // soldValue: soldValue ? soldValue : (quantity * product.soldValue),
+        liquidValue: soldValue - (product.buyedValue * quantity),
         soldValue: soldValue,
         selledAt: data.date,
         quantity: quantity,
