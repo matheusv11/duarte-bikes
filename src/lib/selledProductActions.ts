@@ -37,12 +37,15 @@ export async function createSelledProduct(data: any) { // Tipar
 
   const { date, product, quantity, soldValue } = validatedFields.data as any; 
 
+  const valueToSold = soldValue ? soldValue : (quantity * product.soldValue)
   try {
     await prisma.selledProducts.create({
       data: {
         productName: product.name,
-        productValue: product.soldValue,
-        soldValue: soldValue ? soldValue : (quantity * product.soldValue),
+        productSoldValue: product.soldValue,
+        productBuyedValue: product.buyedValue,
+        liquidValue: valueToSold - (product.buyedValue * quantity),
+        soldValue: valueToSold,
         selledAt: data.date,
         productId: product.id,
         quantity: quantity,

@@ -61,6 +61,7 @@ export interface IProductState {
 export interface ISaleProductState {
   products: Product[] | [];
   totalValue: string;
+  liquidValue: string;
   productToEdit: Product | null;
   productToDelete: {
     id: string;

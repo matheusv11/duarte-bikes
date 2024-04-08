@@ -55,7 +55,9 @@ model Rents {
 model SelledProducts {
   id                String    @default(cuid()) @id
   productName       String    @map(name: "product_name")
-  productValue      Float     @map(name: "product_value")
+  productBuyedValue Float     @map(name: "product_buyed_value")
+  productSoldValue  Float     @map(name: "product_sold_value")
+  liquidValue       Float     @map(name: "liquid_value")
   soldValue         Float     @map(name: "sold_value")
   quantity          Int
   selledAt          DateTime  @map(name: "selled_at")

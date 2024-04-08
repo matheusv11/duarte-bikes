@@ -44,19 +44,33 @@ export default [
       label: "Produto",
     },
     {
-      name: "quantity",
-      label: "Quantidade",
-    },
-    {
-      name: "productValue",
-      label: "Valor produto",
+      name: 'liquidValue',
+      label: 'Ganho líquido',
       options: {
         customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
       }
     },
     {
       name: "soldValue",
-      label: "Valor vendido",
+      label: "Ganho venda",
+      options: {
+        customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
+      }
+    },
+    {
+      name: "quantity",
+      label: "Quantidade",
+    },
+    {
+      name: "productBuyedValue",
+      label: "Valor comprado",
+      options: {
+        customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
+      }
+    },
+    {
+      name: "productSoldValue",
+      label: "Valor de venda",
       options: {
         customBodyRender: (val) => val ? valueCurrencyMask(val.toString()) : val
       }

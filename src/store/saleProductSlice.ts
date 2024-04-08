@@ -6,6 +6,7 @@ import { fetchSelledProducts } from '@/src/lib/data';
 const initialState: ISaleProductState = {
   products: [],
   totalValue: "0",
+  liquidValue: "0",
   productToDelete: null,
   loading: false,
   productToEdit: null,
@@ -55,6 +56,7 @@ export const saleProductSlice = createSlice({
       state.products = action.payload?.products as any // Tipar direito
       state.totalCount = action.payload?.count as any
       state.totalValue = action.payload?.totalValue as any
+      state.liquidValue = action.payload?.liquidValue as any
     }),
     builder.addCase(getSelledProducts.rejected, (state, action) => {
       state.loading = false

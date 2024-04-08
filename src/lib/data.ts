@@ -22,6 +22,7 @@ export async function fetchProductsToSale({ query = '' }) {
         id: true,
         name: true,
         soldValue: true,
+        buyedValue: true,
       },
       orderBy: {
         createdAt: 'desc'
@@ -119,8 +120,11 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
         _all: true
       },
       _sum: {
+        // productBuyedValue: true,
+        // productSoldValue: true,
+        liquidValue: true,
         soldValue: true
-      }
+      },
     }); // Talvez passar pra outro metodo, evitando toda request
 
     const products = await prisma.selledProducts.findMany({
@@ -151,6 +155,7 @@ export async function fetchSelledProducts({query, page = 1, perPage = 100, start
       }
     ))
     return {
+      liquidValue: countProducts._sum.liquidValue,
       totalValue: countProducts._sum.soldValue,
       products: formatedProducts,
       count: countProducts._count._all

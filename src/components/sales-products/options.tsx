@@ -22,7 +22,7 @@ const style = {
 
 export default function TableOptions () {
 
-  const { loading, totalCount, totalValue } = useAppSelector((state) => state.saleProduct);
+  const { loading, totalCount, totalValue, liquidValue } = useAppSelector((state) => state.saleProduct);
   const { query, currentPage, rows, closeSearch, changePage, handleSearch, changeRows } = useTable();
 
   const options: MUIDataTableOptions = {
@@ -57,13 +57,20 @@ export default function TableOptions () {
                         Total
                       </TableCell>
                     );
-                  } else if (col.name === "soldValue") {
+                  } else if (col.name === "liquidValue") {
+                    return (
+                      <TableCell sx={style.footerCell} key={index} >
+                        {liquidValue ? valueCurrencyMask(liquidValue.toString()) : liquidValue}
+                      </TableCell>
+                    );
+                  } 
+                  else if (col.name === "soldValue") {
                     return (
                       <TableCell sx={style.footerCell} key={index} >
                         {totalValue ? valueCurrencyMask(totalValue.toString()) : totalValue}
                       </TableCell>
                     );
-                  } else {
+                  }else {
                     return  <TableCell key={index} sx={style.footerCell}  />;
                   }
                 }
