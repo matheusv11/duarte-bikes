@@ -36,6 +36,63 @@ export async function fetchProductsToSale({ query = '' }) {
   }
 }
 
+export async function fetchBikesToRent({ query = '' }) {
+  noStore();
+
+  try {
+    const products = await prisma.bikes.findMany({
+      take: 5,
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+   
+    return products
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function fetchCustomersToRent({ query = '' }) {
+  noStore();
+
+  try {
+    const products = await prisma.users.findMany({
+      take: 5,
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined,
+        kind: 'user'
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+   
+    return products
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+
 export async function fetchProducts({query = '', page = 1, perPage = 100 }: FetchProducts) {
   noStore();
 
@@ -273,6 +330,88 @@ export async function fetchBikes({query = '', page = 1, perPage = 100 }: FetchPr
     return {
       bikes: formatedBikes,
       count: countBikes
+    }; // Tipar bem o retorno
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function fetchRents({query = '', page = 1, perPage = 100, startDate, endDate }: FetchProducts) {
+  noStore();
+
+  const skip = (page - 1) * perPage;
+  const take = perPage;
+
+  try {
+    const countRents = await prisma.rents.count({
+      where: {
+        bikeName: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined,
+        userName: {
+          contains: query,
+          mode: 'insensitive'
+        } || undefined,
+        scheduleStart:{
+          gte: startDate ? startOfDay(parseISO(startDate)) : startOfMonth(new Date()),
+          lte: endDate ? endOfDay(parseISO(endDate)) : endOfMonth(new Date()),
+        }
+      }
+    }); // Talvez passar pra outro metodo, evitando toda request
+
+    const products = await prisma.rents.findMany({
+      skip: skip,
+      take: take,
+      where: {
+        OR: [{
+          bikeName: {
+            contains: query,
+            mode: 'insensitive'
+          } || undefined,
+  
+        },{
+          userName: {
+            contains: query,
+            mode: 'insensitive'
+          } || undefined
+        }],
+        scheduleStart:{
+          gte: startDate ? startOfDay(parseISO(startDate)) : startOfMonth(new Date()),
+          lte: endDate ? endOfDay(parseISO(endDate)) : endOfMonth(new Date()),
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    const formatedRents = products
+    .map(p => (
+      {
+        ...p,
+        edit: {
+          ...p,
+          bike: { id: p.bikeId, name: p.bikeName},
+          user: {id: p.userId, name: p.userName },
+          date: [p.scheduleStart, p.scheduleEnd],
+          value: valueCurrencyMask(p.value.toString()),
+          // scheduleStart: format(p.scheduleStart, "dd/MM/yyyy HH:mm:ss"),
+          // scheduleEnd: format(p.scheduleEnd, "dd/MM/yyyy HH:mm:ss"),
+        },
+        delete: {id: p.id, name: p.userName},
+        scheduleStart: format(p.scheduleStart, "dd/MM/yyyy HH:mm:ss"),
+        scheduleEnd: format(p.scheduleEnd, "dd/MM/yyyy HH:mm:ss"),
+        createdAt: format(p.createdAt, "dd/MM/yyyy HH:mm:ss"),
+        updatedAt: format(p.updatedAt, "dd/MM/yyyy HH:mm:ss")
+      }
+    ))
+
+    console.log("Formatado", formatedRents);
+    return {
+      rents: formatedRents,
+      count: countRents
     }; // Tipar bem o retorno
   } catch (error) {
     console.error('Database Error:', error);

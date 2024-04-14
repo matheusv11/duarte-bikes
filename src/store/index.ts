@@ -4,6 +4,7 @@ import { persistReducer } from "redux-persist";
 import { productReducer } from "@/src/store/productSlice";
 import { saleProductReducer } from "@/src/store/saleProductSlice";
 import { bikeReducer } from "@/src/store/bikeSlice";
+import { rentReducer } from "@/src/store/rentSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { userReducer } from "./userSlice";
 
@@ -39,7 +40,8 @@ const rootReducer = combineReducers({ // Don't need to persist reduce now
   product: productReducer,
   saleProduct: saleProductReducer,
   user: userReducer,
-  bike: bikeReducer
+  bike: bikeReducer,
+  rent: rentReducer
 });
 
 export const store = configureStore({

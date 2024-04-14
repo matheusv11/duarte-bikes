@@ -29,6 +29,7 @@ export async function createCustomer(data: any) { // Tipar
   }
  
   const { name,address,cellphone,cpfCnpj } = validatedFields.data;
+  console.log("Cellhphone", cellphone)
   const hashedPassword = await bcrypt.hash("mk1@b7k7", 10); // Deixar no env
   try {
     await prisma.users.create({

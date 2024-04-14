@@ -1,12 +1,18 @@
-import styles from "@/src/styles/page.module.css";
-import { Box, Typography } from '@mui/material';
+import type { Metadata } from "next";
+import RentsTable from '@/src/components/rents/table'
+import RentForm from '@/src/components/rents/form'
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Aluguéis",
+  description: "Cadastro de alugueis",
+};
+
+export default function Page() {
+
   return (
-    <Box>
-      <Typography variant="body1">
-        Página de Alugueis
-      </Typography>
-    </Box>
+    <>
+      <RentsTable/>
+      <RentForm />
+    </>
   );
 }

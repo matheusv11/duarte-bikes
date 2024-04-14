@@ -40,15 +40,15 @@ model Users {
 
 model Rents {
   id              String    @default(cuid()) @id
+  userName        String    @map(name: "user_name")
+  bikeName        String    @map(name: "bike_name")
   value           Float
-  schedule_start  DateTime
-  schedule_end    DateTime // If delete User, not delete rent history
-  rented          Boolean // Only to block other user to pick this bike while other is paying
-  paid            Boolean
+  scheduleStart  DateTime @map(name: "schedule_start")
+  scheduleEnd    DateTime @map(name: "schedule_end")
   createdAt       DateTime  @default(now()) @map(name: "created_at")
   updatedAt       DateTime  @updatedAt @map(name: "updated_at")
-  user  Users?    @relation(fields: [userId], references: [id])
-  bike    Bikes?  @relation(fields: [bikeId], references: [id])
+  user    Users?    @relation(fields: [userId], references: [id])
+  bike    Bikes?    @relation(fields: [bikeId], references: [id])
   bikeId  String?
   userId  String?
   @@map(name: "rents")
