@@ -10,6 +10,7 @@ const initialState: IRentState = {
   rentToEdit: null,
   openDrawer: false,
   totalCount: 0,
+  totalValue: 0,
   errors: null
 };
 
@@ -53,6 +54,7 @@ export const rentSlice = createSlice({
       state.loading = false;
       state.rents = action.payload?.rents as any // Tipar direito
       state.totalCount = action.payload?.count as any
+      state.totalValue = action.payload?.totalValue
     }),
     builder.addCase(getRents.rejected, (state, action) => {
       state.loading = false

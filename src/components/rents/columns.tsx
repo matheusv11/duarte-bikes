@@ -51,15 +51,15 @@ export default [ // Tipar // Alinhar coluna com oq retornar do banco
   label: "Bike",
 },
 {
-  name: "userName",
-  label: "Cliente",
-},
-{
   name: "value",
   label: "Valor",
   options: {
     customBodyRender: (val) => val ? `${valueCurrencyMask(val.toString())}` : val
   }
+},
+{
+  name: "userName",
+  label: "Cliente",
 },
 {
   name: "scheduleStart",

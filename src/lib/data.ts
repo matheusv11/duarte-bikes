@@ -344,22 +344,33 @@ export async function fetchRents({query = '', page = 1, perPage = 100, startDate
   const take = perPage;
 
   try {
-    const countRents = await prisma.rents.count({
+
+    const countRents = await prisma.rents.aggregate({
       where: {
-        bikeName: {
-          contains: query,
-          mode: 'insensitive'
-        } || undefined,
-        userName: {
-          contains: query,
-          mode: 'insensitive'
-        } || undefined,
+        OR: [{
+          bikeName: {
+            contains: query,
+            mode: 'insensitive'
+          } || undefined,
+  
+        },{
+          userName: {
+            contains: query,
+            mode: 'insensitive'
+          } || undefined
+        }],
         scheduleStart:{
           gte: startDate ? startOfDay(parseISO(startDate)) : startOfMonth(new Date()),
           lte: endDate ? endOfDay(parseISO(endDate)) : endOfMonth(new Date()),
         }
-      }
-    }); // Talvez passar pra outro metodo, evitando toda request
+      },
+      _count: {
+        _all: true
+      },
+      _sum: {
+        value: true
+      },
+    });
 
     const products = await prisma.rents.findMany({
       skip: skip,
@@ -411,7 +422,8 @@ export async function fetchRents({query = '', page = 1, perPage = 100, startDate
     console.log("Formatado", formatedRents);
     return {
       rents: formatedRents,
-      count: countRents
+      count: countRents._count,
+      totalValue: countRents._sum.value
     }; // Tipar bem o retorno
   } catch (error) {
     console.error('Database Error:', error);
