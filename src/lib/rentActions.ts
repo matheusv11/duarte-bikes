@@ -87,11 +87,11 @@ export async function updateRent(data: any) { // Tipar
  
 }
 
-export async function deleteProduct(id: string) {
+export async function deleteRent(id: string) {
   // throw new Error('Failed to Delete Invoice');
 
   try {
-    await prisma.products.delete({
+    await prisma.rents.delete({
       where: {
         id: id
       }
